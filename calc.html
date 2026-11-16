@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#070b14">
+<title>CALC//12 · אימון לבגרות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070b14;--ink:#e8ecf6;--mut:#8b93a9;--glass:rgba(255,255,255,.045);--bd:rgba(255,255,255,.09);
+--cy:#22d3ee;--li:#a3e635;--vi:#a78bfa;--pk:#f472b6;--am:#fbbf24;--bl:#60a5fa;--ok:#34d399;--bad:#fb7185;--part:#fbbf24}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Heebo,system-ui,sans-serif;font-size:17px;line-height:1.55;min-height:100vh;
+ background-image:radial-gradient(900px 500px at 85% -10%,rgba(167,139,250,.18),transparent 60%),radial-gradient(700px 500px at -10% 20%,rgba(34,211,238,.13),transparent 60%),
+ linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+ background-size:auto,auto,32px 32px,32px 32px;background-attachment:fixed}
+.wrap{max-width:820px;margin:0 auto;padding:18px 14px 80px}
+button{font-family:inherit;cursor:pointer;border:0;color:inherit}
+.mono,.m{font-family:'JetBrains Mono',monospace}
+.m{direction:ltr;unicode-bidi:isolate;display:inline-block;white-space:nowrap;font-weight:700;font-size:.92em}
+.mut{color:var(--mut)}
+.frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;line-height:1.15;margin:0 2px}
+.frac>span:first-child{border-bottom:2px solid currentColor;padding:0 4px 2px}
+.frac>span:last-child{padding:2px 4px 0}
+/* top */
+.logo{font-family:'JetBrains Mono';font-weight:800;letter-spacing:1px;font-size:15px;color:var(--cy);direction:ltr;display:inline-block}
+.logo b{color:var(--vi)}
+.hero{position:relative;border:1px solid var(--bd);background:linear-gradient(135deg,rgba(34,211,238,.10),rgba(167,139,250,.10) 60%,rgba(244,114,182,.08));border-radius:24px;padding:22px;overflow:hidden}
+.hero:after{content:"";position:absolute;inset:-1px;border-radius:24px;padding:1px;background:linear-gradient(135deg,var(--cy),transparent 40%,var(--vi));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.hero h1{font-size:30px;font-weight:900;margin:6px 0 2px;letter-spacing:-.3px}
+.hero .sub{color:var(--mut)}
+.rank{display:flex;align-items:center;gap:12px;margin-top:16px}
+.rank .tag{font-family:'JetBrains Mono';font-weight:800;font-size:13px;padding:6px 10px;border-radius:10px;background:rgba(34,211,238,.12);color:var(--cy);border:1px solid rgba(34,211,238,.35);white-space:nowrap}
+.xp{flex:1;height:10px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.xp i{display:block;height:100%;background:linear-gradient(90deg,var(--cy),var(--vi),var(--pk));box-shadow:0 0 14px rgba(34,211,238,.7);border-radius:99px;transition:width .8s}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:16px}
+.kpi{background:rgba(0,0,0,.25);border:1px solid var(--bd);border-radius:14px;padding:10px;text-align:center}
+.kpi b{display:block;font-family:'JetBrains Mono';font-size:22px;font-weight:800}
+.kpi span{font-size:12px;color:var(--mut)}
+.sect{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 10px}
+.sect h2{font-size:18px;font-weight:800;margin:0}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tc{background:var(--glass);border:1px solid var(--bd);border-radius:18px;padding:14px;position:relative;overflow:hidden}
+.tc:before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--c);box-shadow:0 0 16px var(--c)}
+.tc .ic{font-family:'JetBrains Mono';color:var(--c);font-weight:800;font-size:14px}
+.tc .nm{font-weight:800;margin:4px 0 10px;font-size:16px}
+.bar{height:6px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--c);border-radius:9px;box-shadow:0 0 10px var(--c)}
+.tc .pc{display:flex;justify-content:space-between;font-size:12px;color:var(--mut);margin-top:6px}
+.cta{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:26px 0 10px}
+.btn{position:relative;font-weight:800;font-size:19px;padding:15px 34px;border-radius:14px;background:linear-gradient(135deg,var(--cy),var(--vi));color:#05070d;box-shadow:0 0 0 1px rgba(255,255,255,.15) inset,0 10px 30px rgba(34,211,238,.25);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,255,255,.2) inset,0 14px 36px rgba(167,139,250,.35)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--bd);box-shadow:none}
+.btn.sm{font-size:15px;padding:10px 18px}
+.link{background:none;color:var(--cy);font-weight:700;font-size:15px;padding:6px}
+.foot{display:flex;justify-content:space-between;margin-top:26px;font-size:14px}
+.note{text-align:center;color:var(--mut);font-size:14px}
+/* page */
+.ph{position:sticky;top:8px;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(7,11,20,.85);backdrop-filter:blur(10px);border:1px solid var(--bd);border-radius:16px;padding:10px 14px}
+.ph h2{margin:0;font-size:18px;font-weight:800}
+.prog{display:flex;gap:6px}
+.prog i{width:26px;height:6px;border-radius:9px;background:rgba(255,255,255,.1);transition:.3s}
+.prog i.on{background:var(--cy);box-shadow:0 0 10px var(--cy)}
+.q{background:var(--glass);border:1px solid var(--bd);border-radius:20px;padding:18px;margin:16px 0;position:relative;animation:in .45s both}
+@keyframes in{from{opacity:0;transform:translateY(12px)}}
+.q:before{content:"";position:absolute;top:18px;bottom:18px;right:0;width:3px;border-radius:3px;background:var(--c);box-shadow:0 0 12px var(--c)}
+.qh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.qn{font-family:'JetBrains Mono';font-weight:800;color:var(--c);font-size:14px}
+.chip{font-size:13px;font-weight:700;padding:3px 10px;border-radius:99px;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);border:1px solid color-mix(in srgb,var(--c) 40%,transparent)}
+.ctx{color:#b9c1d6;font-size:15.5px}
+.fx{direction:ltr;text-align:center;font-family:'JetBrains Mono';font-weight:700;font-size:21px;margin:12px 0;padding:14px 10px;border-radius:14px;background:rgba(0,0,0,.35);border:1px solid var(--bd);color:#fff;overflow-x:auto;white-space:nowrap}
+.fx .fn{color:var(--c)}
+.ask{font-weight:700;font-size:17.5px}
+.fields{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;align-items:flex-start}
+.fld{display:flex;flex-direction:column;gap:5px}
+.fld>label{font-size:13.5px;color:var(--mut);font-weight:700}
+.inp{width:170px;font:700 19px 'JetBrains Mono';padding:10px 12px;border-radius:12px;border:1.5px solid var(--bd);background:rgba(0,0,0,.35);color:#fff;direction:ltr;text-align:center;transition:.2s}
+.inp:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 25%,transparent)}
+.pv{font-family:'JetBrains Mono';font-size:12.5px;color:var(--mut);min-height:18px;direction:ltr;text-align:center}
+.pv.bad{color:var(--bad)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.opt{text-align:right;padding:12px 14px;border-radius:14px;border:1.5px solid var(--bd);background:rgba(0,0,0,.25);font-size:15.5px;line-height:1.5;transition:.15s}
+.opt:hover{border-color:color-mix(in srgb,var(--c) 60%,transparent)}
+.opt.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent);box-shadow:0 0 0 1px var(--c) inset}
+.opt.g{padding:6px;text-align:center}
+.opt.g .gl{font-family:'JetBrains Mono';font-weight:800;color:var(--c)}
+.plot{width:100%;height:auto;display:block}
+.hint{font-size:13px;color:var(--mut);margin-top:10px}
+/* results */
+.rh{text-align:center;border:1px solid var(--bd);border-radius:24px;padding:24px;background:linear-gradient(160deg,rgba(34,211,238,.08),rgba(167,139,250,.08))}
+.big{font-family:'JetBrains Mono';font-weight:800;font-size:64px;line-height:1;background:linear-gradient(135deg,var(--cy),var(--vi),var(--pk));-webkit-background-clip:text;background-clip:text;color:transparent;direction:ltr}
+.rh .msg{font-weight:800;font-size:20px;margin-top:8px}
+.pill{display:inline-block;margin:10px 4px 0;padding:5px 12px;border-radius:99px;font-weight:800;font-size:14px;background:rgba(251,191,36,.12);color:var(--am);border:1px solid rgba(251,191,36,.35)}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;text-align:right}
+.sum>div{border-radius:16px;padding:12px 14px;border:1px solid var(--bd)}
+.sum .g{background:rgba(52,211,153,.07)}
+.sum .w{background:rgba(251,113,133,.07)}
+.sum h3{margin:0 0 6px;font-size:16px}
+.sum ul{margin:0;padding-right:18px;font-size:14.5px}
+.rc{border:1px solid var(--bd);background:var(--glass);border-radius:18px;padding:16px;margin:14px 0;border-right:5px solid var(--s)}
+.rc.ok{--s:var(--ok)}.rc.wrong,.rc.blank{--s:var(--bad)}.rc.partial{--s:var(--part)}
+.rt{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.ri{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:900;color:#05070d;background:var(--s)}
+.rc .fx{font-size:17px;padding:10px}
+.rq{font-size:15px;color:#c3cad9;margin-top:8px}
+.ans{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.ans>div{border-radius:12px;padding:8px 12px;font-size:14.5px;background:rgba(0,0,0,.3);border:1px solid var(--bd)}
+.ans .bad{border-color:rgba(251,113,133,.4)}
+.ans .good{border-color:rgba(52,211,153,.45)}
+.err{margin-top:10px;border:1px dashed rgba(251,191,36,.5);background:rgba(251,191,36,.06);border-radius:14px;padding:10px 12px}
+.err b{color:var(--am)}
+.err p{margin:4px 0 0;font-size:14.5px;color:#d7dceb}
+details{margin-top:10px}
+summary{cursor:pointer;color:var(--cy);font-weight:700;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"▸ "}details[open] summary:before{content:"▾ "}
+.sol{margin:8px 0 0;padding-right:20px;font-size:15px}
+.sol li{margin:5px 0}
+.rplot{max-width:300px;margin:8px auto 0}
+/* stats */
+.panel{border:1px solid var(--bd);background:var(--glass);border-radius:18px;padding:16px;margin:14px 0}
+.panel h3{margin:0 0 10px;font-size:17px}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+td,th{padding:7px 5px;border-bottom:1px solid rgba(255,255,255,.06);text-align:right}
+th{color:var(--mut);font-weight:600;font-size:12.5px}
+.mb{height:6px;background:rgba(255,255,255,.07);border-radius:9px;overflow:hidden;min-width:60px}
+.mb i{display:block;height:100%;border-radius:9px}
+.cnt{display:inline-block;min-width:26px;text-align:center;background:rgba(251,113,133,.15);color:var(--bad);border-radius:99px;font-weight:800;font-size:12.5px;padding:1px 7px;margin-left:6px}
+/* modal / fx */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:50;padding:16px}
+.mod{background:#0f1524;border:1px solid var(--bd);border-radius:20px;padding:22px;max-width:380px;width:100%;text-align:center}
+.mod p{font-size:18px;margin:0 0 14px}
+.mod .inp{width:100%;direction:rtl;font-family:Heebo;margin-bottom:14px}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:60}
+@media (max-width:600px){
+ .tgrid{grid-template-columns:1fr 1fr}
+ .kpis{grid-template-columns:repeat(2,1fr)}
+ .opts{grid-template-columns:1fr}
+ .opts.gr{grid-template-columns:1fr 1fr}
+ .sum{grid-template-columns:1fr}
+ .fx{font-size:17px}
+ .hero h1{font-size:25px}
+ .inp{width:150px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ================= utils ================= */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const f3=n=>{if(n==null||!isFinite(n))return '?';const r=Math.round(n*1000)/1000;return String(Object.is(r,-0)?0:r).replace('-','−')};
+const M=s=>`<span class="m">${s}</span>`;
+const neg=n=>String(n).replace('-','−');
+const term=(c,s)=>c>0?` + ${c===1&&s?'':c}${s}`:c<0?` − ${c===-1&&s?'':-c}${s}`:'';
+const poly2=(s,p)=>'x²'+term(-s,'x')+term(p,'');
+const lin=p=>'x'+term(-p,'');
+const frac=(a,b)=>`<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const lt=(a,op,b)=>M(`${a} ${op} ${b}`);
+/* expression evaluator: ln2-1, 2/e, sqrt(5), e^2 ... */
+function evalExpr(str){
+ const s=String(str).toLowerCase().replace(/\s+/g,'').replace(/[−–]/g,'-').replace(/[×·]/g,'*').replace(/÷/g,'/').replace(/,/g,'.').replace(/√/g,'sqrt').replace(/π/g,'pi');
+ if(!s)return null;let i=0;
+ function primary(){
+  if(s[i]==='('){i++;const v=expr();if(s[i]!==')')throw 0;i++;return v}
+  let m=s.slice(i).match(/^(\d+\.?\d*|\.\d+)/);if(m){i+=m[0].length;return parseFloat(m[0])}
+  m=s.slice(i).match(/^(ln|log|sqrt|pi|e)/);
+  if(m){i+=m[0].length;const id=m[0];if(id==='pi')return Math.PI;if(id==='e')return Math.E;const a=power();
+   return id==='ln'?Math.log(a):id==='log'?Math.log10(a):Math.sqrt(a)}
+  throw 0;
+ }
+ function power(){const b=primary();if(s[i]==='^'){i++;return Math.pow(b,unary())}return b}
+ function unary(){if(s[i]==='-'){i++;return -unary()}if(s[i]==='+'){i++;return unary()}return power()}
+ function trm(){let v=unary();while(i<s.length){const c=s[i];if(c==='*'){i++;v*=unary()}else if(c==='/'){i++;v/=unary()}else if(/[\d.(a-z]/.test(c))v*=unary();else break}return v}
+ function expr(){let v=trm();while(s[i]==='+'||s[i]==='-'){const c=s[i++];const t=trm();v=c==='+'?v+t:v-t}return v}
+ try{const v=expr();return i===s.length?v:NaN}catch(e){return NaN}
+}
+/* ================= errors ================= */
+const ERR={
+ blank:['לא נענה','גם ניסיון חלקי שווה נקודות בבגרות. תמיד כדאי לכתוב משהו.'],
+ format:['לא הצלחתי לקרוא את התשובה','כתבו מספר או ביטוי, למשל: ln2-1, 2/e, sqrt(5).'],
+ arithmetic:['טעות חישוב','הדרך אולי נכונה. בדקו כל שלב, במיוחד סימנים ושברים.'],
+ precision:['דיוק לא מספיק','בבגרות מבקשים לרוב שלוש ספרות אחרי הנקודה. עגלו רק בסוף החישוב.'],
+ dom_reversed:['תחום ההגדרה הפוך','ln מוגדר רק כשהביטוי שבתוכו חיובי. בדקו בטבלת סימנים איפה הביטוי > 0.'],
+ dom_closed:['כללתם נקודות שבהן הביטוי = 0','ln(0) לא מוגדר. התחום פתוח: < ולא ≤.'],
+ dom_denominator:['בדקתם רק את המכנה','בתוך ln צריך שהביטוי כולו יהיה חיובי, לא רק שהמכנה ≠ 0.'],
+ dom_partial:['חסר חלק מהתחום','פרבולה "צוחקת" חיובית בשני הצדדים של השורשים, לא רק בצד אחד.'],
+ dom_ln_x:['בלבול עם ln x','בתוך ה-ln יש x² + k². הביטוי הזה תמיד חיובי, ולכן f מוגדרת לכל x.'],
+ asym_missing:['חסרה אסימפטוטה','בודקים גם קצוות של התחום (אנכיות) וגם x→∞ (אופקית).'],
+ asym_wrong:['אסימפטוטה לא נכונה','אנכית: בקצה התחום שבו הביטוי בתוך ln שואף ל-0⁺ או ל-∞. אופקית: רק אם ל-f יש גבול סופי כש-x→∞.'],
+ asym_ln_limit:['שכחתם להפעיל ln על הגבול','אם הביטוי בתוך ה-ln שואף ל-1, אז f שואפת ל-ln1 = 0.'],
+ chain_rule:['שכחתם את כלל השרשרת','(ln u)′ = u′/u, ולא 1/u.'],
+ deriv_rule:['טעות בגזירה','בדקו כל איבר: (ln x)′ = 1/x, (x/k)′ = 1/k, (kx)′ = k.'],
+ quotient:['טעות בנגזרת מנה','(u/v)′ = (u′v − uv′)/v². הסדר במונה חשוב.'],
+ log_rule:['טעות בחוקי לוגריתמים','ln(a/b) = ln a − ln b,  ln(a²) = 2ln a.'],
+ forgot_ln:['שכחתם את ה-ln','הצבתם בביטוי שבתוך ה-ln, אבל צריך להפעיל עליו ln.'],
+ tangent_n:['טעות בחישוב n','n = f(x₀) − m·x₀. מציבים את נקודת ההשקה במשוואה y = mx + n.'],
+ ln_zero:['פתרתם u = 0 במקום u = 1','ln u = 0 ⇔ u = 1. הנקודות שבהן u = 0 הן האסימפטוטות.'],
+ ext_type:['סוג הקיצון שגוי','בודקים בטבלת סימנים של f′: מ-+ ל-− זה מקסימום, ומ-− ל-+ זה מינימום.'],
+ stationary_not_ext:['f′ = 0 לא תמיד קיצון','צריך החלפת סימן של f′. אם f′ ≤ 0 משני הצדדים, אין קיצון.'],
+ ext_value:['ערך y שגוי','מציבים את x של הקיצון בפונקציה המקורית f, לא ב-f′.'],
+ ext_x_zero:['השתמשתם באפס של f במקום של f′','קיצון מחפשים איפה f′(x) = 0, לא איפה f(x) = 0.'],
+ mono_reversed:['עלייה וירידה הפוכות','f′ > 0 ⇒ עולה; f′ < 0 ⇒ יורדת. בדקו בנקודה אחת בכל קטע.'],
+ ignore_domain:['התעלמתם מתחום ההגדרה','כל תשובה (עלייה, ירידה, אי-שוויון) נכונה רק בתוך תחום ההגדרה.'],
+ mono_union:['אי אפשר לאחד את הקטעים','הפונקציה יורדת בכל קטע בנפרד. בין הקטעים יש קפיצה, ולכן לא "יורדת לכל x".'],
+ ineq_used_stationary:['השתמשתם בנקודה הלא נכונה','לאי-שוויון f ≥ 0 צריך את נקודת האפס של f, לא את הנקודה שבה f′ = 0.'],
+ ineq_direction:['כיוון הפוך','הציבו נקודה אחת מכל צד ובדקו את הסימן של f. כשהפונקציה יורדת, היא חיובית משמאל לנקודת האפס.'],
+ ineq_all:['כל התחום לא מתאים','בודקים את הסימן בכל קטע של התחום בנפרד.'],
+ graph_reflect:['גרף משוקף','הציבו נקודה אחת ובדקו את הסימן של f. למשל f(x) חיובית או שלילית?'],
+ graph_domain:['תחום ההגדרה של הגרף לא מתאים','התחילו מהתחום: איפה הגרף קיים, ואיפה האסימפטוטות האנכיות.'],
+ graph_mono:['העלייה/ירידה בגרף לא מתאימה','השוו את כיוון הגרף לסימן של f′ בכל קטע.']
+};
+/* ================= checkers ================= */
+const TOL=0.0015;
+function checkVal(raw,c,traps=[]){
+ const s=String(raw||'').trim();if(!s)return{st:'blank',e:'blank'};
+ const v=evalExpr(s);if(v==null||!isFinite(v))return{st:'wrong',e:'format'};
+ if(Math.abs(v-c)<=TOL)return{st:'ok'};
+ for(const [t,e] of traps)if(t!=null&&isFinite(t)&&Math.abs(t-c)>TOL&&Math.abs(v-t)<=TOL)return{st:'wrong',e};
+ if(Math.abs(v-c)<=0.02)return{st:'partial',e:'precision'};
+ return{st:'wrong',e:'arithmetic'};
+}
+function checkChoice(v,opts){if(v==null||v==='')return{st:'blank',e:'blank'};const o=opts[+v];return o.e?{st:'wrong',e:o.e}:{st:'ok'}}
+function combine(rs){
+ if(rs.every(r=>r.st==='blank'))return{st:'blank',e:'blank'};
+ if(rs.every(r=>r.st==='ok'))return{st:'ok'};
+ const bad=rs.find(r=>r.st==='wrong'&&r.e!=='blank')||rs.find(r=>r.st!=='ok');
+ return{st:rs.some(r=>r.st==='ok'||r.st==='partial')?'partial':'wrong',e:bad.e};
+}
+const opt=(h,e=null)=>({h,e});
+/* ================= function families ================= */
+const FN=s=>`<span class="fn">f(x)</span> = ${s}`;
+function famF1(){const a=R(-3,4),b=a+R(1,4),s=a+b,p=a*b,u=x=>x*x-s*x+p,du=x=>2*x-s;
+ return{id:'F1',a,b,s,p,u,du,f:x=>u(x)>0?Math.log(u(x)):NaN,df:x=>du(x)/u(x),html:FN(`ln(${poly2(s,p)})`),win:[a-4.5,b+4.5],vas:[a,b],hz:null,
+  ctx:pick(['🎮 במשחק מחשב, עוצמת אפקט הסאונד (בסקאלה לוגריתמית) כשהשחקן נמצא בנקודה x לאורך המסלול היא:','📈 אנליסט בונה מודל לתנודתיות של מניה כתלות בפרמטר x:'])}}
+function famF3(){const a=R(-4,3),b=a+R(3,6),s=a+b,p=a*b,u=x=>-x*x+s*x-p,du=x=>-2*x+s;
+ return{id:'F3',a,b,s,p,u,du,m:s/2,f:x=>u(x)>0?Math.log(u(x)):NaN,df:x=>du(x)/u(x),html:FN(`ln(−x²${term(s,'x')}${term(-p,'')})`),win:[a-2,b+2],vas:[a,b],hz:null,
+  ctx:pick(['📶 עוצמת אות ה-Wi-Fi (בסקאלה לוגריתמית) בנקודה x לאורך מסדרון היא:','🔊 עוצמת השמע (בסקאלה לוגריתמית) בנקודה x על במה בין שני רמקולים היא:'])}}
+function famF2(){const k=pick([1,1,2,3]),f=x=>Math.log(x*x+k*k)-x/k;
+ let lo=-50,hi=50;for(let i=0;i<200;i++){const m=(lo+hi)/2;if(f(m)>0)lo=m;else hi=m}
+ return{id:'F2',k,f,df:x=>2*x/(x*x+k*k)-1/k,root:k===1?0:(lo+hi)/2,html:FN(`ln(x² + ${k*k}) − ${k===1?'x':frac('x',k)}`),win:[-4*k-2,6*k+2],vas:[],hz:null,
+  ctx:`📱 שני מודלים מנבאים את מספר העוקבים בערוץ (בסקאלה מנורמלת) בשבוע x: מודל לוגריתמי ${M('ln(x² + '+k*k+')')} ומודל ליניארי ${M(k===1?'x':'x/'+k)}. הפונקציה f היא הפער ביניהם:`}}
+function famF4(){const k=pick([2,3,4,5,6]);
+ return{id:'F4',k,f:x=>x>0?x-k*Math.log(x):NaN,df:x=>1-k/x,html:FN(`x − ${k}·ln(x)`),win:[-1,3*k+2],vas:[0],hz:null,
+  ctx:'🛸 חברת רחפנים: העלות הממוצעת לרחפן (באלפי ₪) כשמייצרים x אלפי רחפנים היא:'}}
+function famF5(){const c=pick([2,4,5,10]);
+ return{id:'F5',c,f:x=>x>0?c*Math.log(x)/x:NaN,df:x=>c*(1-Math.log(x))/(x*x),html:FN(frac(`${c}·ln(x)`,'x')),win:[-1,12],vas:[0],hz:0,
+  ctx:pick(['🏋️ מדד שיפור הכושר כשמתאמנים x שעות בשבוע הוא:','🔋 מדד יעילות הטעינה של סוללה אחרי x שעות טעינה הוא:'])}}
+function famF6(){const p=R(-4,2),q=p+R(1,4);
+ return{id:'F6',p,q,f:x=>{const u=(x-p)/(x-q);return u>0?Math.log(u):NaN},df:x=>1/(x-p)-1/(x-q),html:FN(`ln(${frac(lin(p),lin(q))})`),win:[p-6,q+6],vas:[p,q],hz:0,
+  ctx:'🎧 ההגבר (Gain) של מגבר אודיו, בסקאלה לוגריתמית, כתלות בפרמטר הכוונון x הוא:'}}
+const FAM={F1:famF1,F2:famF2,F3:famF3,F4:famF4,F5:famF5,F6:famF6};
+function genFam(ids,cond=()=>true){let F;do{F=FAM[pick(ids)]()}while(!cond(F));return F}
+const domTxt=F=>({F1:`${lt('x','<',F.a)} או ${lt('x','>',F.b)}`,F3:M(`${neg(F.a)} < x < ${neg(F.b)}`),F2:'כל x',F4:lt('x','>',0),F5:lt('x','>',0),F6:`${lt('x','<',F.p)} או ${lt('x','>',F.q)}`})[F.id];
+
+/* ================= question builders ================= */
+function qDom(){
+ const F=genFam(['F1','F2','F3','F4','F5','F6']);let o,sol;
+ switch(F.id){
+  case'F1':o=[opt(domTxt(F)),opt(M(`${neg(F.a)} < x < ${neg(F.b)}`),'dom_reversed'),opt(`${lt('x','≤',F.a)} או ${lt('x','≥',F.b)}`,'dom_closed'),opt(lt('x','>',F.b),'dom_partial')];
+   sol=[`ln מוגדר רק כשהביטוי שבתוכו חיובי: ${M(poly2(F.s,F.p)+' > 0')}`,`פירוק: ${M(`(${lin(F.a)})(${lin(F.b)}) > 0`)}`,`פרבולה "צוחקת" חיובית מחוץ לשורשים: ${domTxt(F)}`];break;
+  case'F3':o=[opt(domTxt(F)),opt(`${lt('x','<',F.a)} או ${lt('x','>',F.b)}`,'dom_reversed'),opt(M(`${neg(F.a)} ≤ x ≤ ${neg(F.b)}`),'dom_closed'),opt('כל x','dom_partial')];
+   sol=[`צריך ${M('−x²'+term(F.s,'x')+term(-F.p,'')+' > 0')}, כלומר ${M(`(${lin(F.a)})(${lin(F.b)}) < 0`)}`,`פרבולה "צוחקת" שלילית בין השורשים: ${domTxt(F)}`];break;
+  case'F2':o=[opt(`כל x, כי ${M('x² + '+F.k*F.k+' > 0')} תמיד`),opt(lt('x','>',0),'dom_ln_x'),opt(lt('x','≠',0),'dom_ln_x'),opt(lt('x','>',-F.k),'dom_ln_x')];
+   sol=[`${M('x² ≥ 0')} לכל x, ולכן ${M('x² + '+F.k*F.k+' ≥ '+F.k*F.k+' > 0')}`,'הביטוי בתוך ה-ln תמיד חיובי, ולכן f מוגדרת לכל x.'];break;
+  case'F4':case'F5':o=[opt(lt('x','>',0)),opt(lt('x','≥',0),'dom_closed'),opt('כל x','dom_reversed'),opt(lt('x','≠',0),'dom_denominator')];
+   sol=[`${M('ln(x)')} מוגדר רק עבור ${M('x > 0')}${F.id==='F5'?'. גם המכנה x ≠ 0 מתקיים שם.':'.'}`];break;
+  case'F6':o=[opt(domTxt(F)),opt(M(`${neg(F.p)} < x < ${neg(F.q)}`),'dom_reversed'),opt(lt('x','≠',F.q),'dom_denominator'),opt(lt('x','>',F.q),'dom_partial')];
+   sol=[`צריך ${M(`(${lin(F.p)})/(${lin(F.q)}) > 0`)}: המונה והמכנה באותו סימן.`,`טבלת סימנים עם ${M('x = '+neg(F.p))} וגם ${M('x = '+neg(F.q))}: ${domTxt(F)}`];break;
+ }
+ const opts=shuffle(o);
+ return{topic:'dom',skill:'dom',F,ask:F.id==='F2'?'האם f מוגדרת לכל x? בחרו את התשובה המנומקת הנכונה.':'מהו תחום ההגדרה של f?',
+  fields:[{k:'c',kind:'choice',opts}],check:v=>checkChoice(v.c,opts),ans:o[0].h,sol};
+}
+function qYint(){
+ const F=genFam(['F1','F2','F3','F6'],F=>F.id==='F1'?(F.a>0||F.b<0):F.id==='F3'?(F.a<0&&F.b>0):F.id==='F6'?(F.p>0||F.q<0):true);
+ let c,tr,sol,inner;
+ if(F.id==='F1'){inner=F.p;c=Math.log(F.p);tr=[[F.p,'forgot_ln'],[Math.log(F.s*F.s+F.p),'arithmetic']]}
+ if(F.id==='F3'){inner=-F.p;c=Math.log(-F.p);tr=[[-F.p,'forgot_ln']]}
+ if(F.id==='F2'){inner=F.k*F.k;c=Math.log(F.k*F.k);tr=[[F.k*F.k,'forgot_ln'],[Math.log(F.k),'log_rule']]}
+ if(F.id==='F6'){inner=F.p/F.q;c=Math.log(F.p/F.q);tr=[[F.p/F.q,'forgot_ln'],[Math.log(F.q/F.p),'log_rule']]}
+ sol=[`נקודת החיתוך עם ציר ה-y: מציבים x = 0.`,`${M('f(0) = ln('+f3(inner)+')'+(F.id==='F2'?' − 0':''))} = ${M(f3(c))}`,`הנקודה: ${M('(0, '+f3(c)+')')}`];
+ return{topic:'dom',skill:'yint',F,ask:'מצאו את שיעור ה-y של נקודת החיתוך של גרף f עם ציר ה-y.',
+  key:{y:c},fields:[{k:'y',kind:'num',label:'y ='}],check:v=>checkVal(v.y,c,tr),ans:M('y = '+f3(c)),sol};
+}
+function qAsym(){
+ const F=genFam(['F1','F3','F4','F5','F6']);let o,sol;
+ const v2=(a,b)=>`${lt('x','=',a)} וגם ${lt('x','=',b)}`;
+ switch(F.id){
+  case'F1':o=[opt(v2(F.a,F.b)+', אין אופקית'),opt(lt('x','=',F.b)+' בלבד','asym_missing'),opt(v2(F.a,F.b)+' וגם '+lt('y','=',0),'asym_wrong'),opt(lt('x','=',F.s/2),'asym_wrong')];
+   sol=[`בקצוות התחום ${M('x→'+neg(F.a)+'⁻')} וגם ${M('x→'+neg(F.b)+'⁺')} הביטוי בתוך ה-ln שואף ל-0⁺, ולכן ${M('f→−∞')}.`,`כש-${M('x→±∞')} הביטוי שואף ל-∞, ולכן ${M('f→∞')} ואין אסימפטוטה אופקית.`];break;
+  case'F3':o=[opt(v2(F.a,F.b)),opt(lt('x','=',F.m),'asym_wrong'),opt(lt('y','=',0),'asym_wrong'),opt(lt('x','=',F.a)+' בלבד','asym_missing')];
+   sol=[`בשני קצוות התחום הביטוי בתוך ה-ln שואף ל-0⁺, ולכן ${M('f→−∞')}: אסימפטוטות ${v2(F.a,F.b)}.`,'התחום חסום, ולכן אין משמעות לאסימפטוטה אופקית.'];break;
+  case'F4':o=[opt(lt('x','=',0)+' בלבד'),opt(lt('x','=',0)+' וגם '+lt('y','=',0),'asym_wrong'),opt('אין אסימפטוטות','asym_missing'),opt(lt('x','=',F.k),'asym_wrong')];
+   sol=[`כש-${M('x→0⁺')}: ${M('ln x → −∞')}, ולכן ${M('−'+F.k+'·ln x → +∞')}: אסימפטוטה אנכית ${M('x = 0')}.`,`כש-${M('x→∞')}: x גדל מהר יותר מ-ln x, ולכן ${M('f→∞')} ואין אסימפטוטה אופקית.`];break;
+  case'F5':o=[opt(lt('x','=',0)+' וגם '+lt('y','=',0)),opt(lt('x','=',0)+' בלבד','asym_missing'),opt(lt('y','=',0)+' בלבד','asym_missing'),opt(lt('x','=','e')+' וגם '+lt('y','=',0),'asym_wrong')];
+   sol=[`כש-${M('x→0⁺')}: ${M('ln x→−∞')} והמכנה ${M('→0⁺')}, ולכן ${M('f→−∞')}: ${M('x = 0')}.`,`כש-${M('x→∞')}: ${M('ln(x)/x → 0')}, ולכן ${M('y = 0')} היא אסימפטוטה אופקית.`];break;
+  case'F6':o=[opt(v2(F.p,F.q)+' וגם '+lt('y','=',0)),opt(v2(F.p,F.q)+' בלבד','asym_missing'),opt(v2(F.p,F.q)+' וגם '+lt('y','=',1),'asym_ln_limit'),opt(lt('x','=',F.q)+' וגם '+lt('y','=',0),'asym_missing')];
+   sol=[`${M('x→'+neg(F.p)+'⁻')}: המונה→0, הביטוי→0⁺ ⇒ ${M('f→−∞')}. ${M('x→'+neg(F.q)+'⁺')}: המכנה→0⁺ ⇒ ${M('f→+∞')}.`,`כש-${M('x→±∞')} השבר שואף ל-1, ולכן ${M('f→ln1 = 0')}: אסימפטוטה ${M('y = 0')}.`];break;
+ }
+ const opts=shuffle(o);
+ return{topic:'asym',skill:'asym',F,ask:(F.id==='F5'||F.id==='F6')?'מהן האסימפטוטות של f, המקבילות לצירים?':'מהן האסימפטוטות של f המקבילות לצירים?',
+  fields:[{k:'c',kind:'choice',opts}],check:v=>checkChoice(v.c,opts),ans:o[0].h,sol};
+}
+function x0For(F){
+ switch(F.id){case'F1':return pick([F.b+1,F.b+2,F.a-1,F.a-2]);case'F3':{const c=[];for(let x=F.a+1;x<F.b;x++)if(x!==F.m)c.push(x);return pick(c)}
+  case'F2':return pick([0,1,2,-1,F.k*2]);case'F4':return pick([1,2,F.k+1,F.k*2]);case'F5':return pick([1,2,3,4]);case'F6':return pick([F.q+1,F.q+2,F.p-1,F.p-2])}
+}
+function derivInfo(F,x0){
+ const c=F.df(x0);let form,tr;
+ switch(F.id){
+  case'F1':case'F3':{const u=F.u(x0),du=F.du(x0);form=frac(F.id==='F1'?('2x'+term(-F.s,'')):('−2x'+term(F.s,'')),F.id==='F1'?poly2(F.s,F.p):'−x²'+term(F.s,'x')+term(-F.p,''));tr=[[1/u,'chain_rule'],[du,'chain_rule'],[1/du,'chain_rule']];
+   return{c,form:`f′(x) = ${form}`,steps:[`(ln u)′ = u′/u, כאשר ${M('u = '+(F.id==='F1'?poly2(F.s,F.p):'−x²'+term(F.s,'x')+term(-F.p,'')))}`,`${M(`f′(${neg(x0)}) = ${neg(du)} / ${neg(u)}`)} = ${M(f3(c))}`],tr}}
+  case'F2':tr=[[1/(x0*x0+F.k*F.k)-1/F.k,'chain_rule'],[2*x0/(x0*x0+F.k*F.k),'deriv_rule'],[2*x0/(x0*x0+F.k*F.k)-x0/F.k,'deriv_rule']];
+   return{c,form:`f′(x) = ${frac('2x','x² + '+F.k*F.k)} − ${frac(1,F.k)}`,steps:[`${M('(ln(x²+'+F.k*F.k+'))′ = 2x/(x²+'+F.k*F.k+')')}, ${M('(x/'+F.k+')′ = 1/'+F.k)}`,`${M(`f′(${neg(x0)}) = ${2*x0}/${x0*x0+F.k*F.k} − 1/${F.k}`)} = ${M(f3(c))}`],tr};
+  case'F4':tr=[[1-F.k,'deriv_rule'],[1-1/x0,'deriv_rule'],[1-F.k*Math.log(x0),'deriv_rule']];
+   return{c,form:`f′(x) = 1 − ${frac(F.k,'x')}`,steps:[`${M('(x)′ = 1')}, ${M('('+F.k+'·ln x)′ = '+F.k+'/x')}`,`${M(`f′(${x0}) = 1 − ${F.k}/${x0}`)} = ${M(f3(c))}`],tr};
+  case'F5':tr=[[F.c*(1+Math.log(x0))/(x0*x0),'quotient'],[F.c*(Math.log(x0)-1)/(x0*x0),'quotient'],[F.c/(x0*x0),'quotient'],[F.c/x0,'quotient']];
+   return{c,form:`f′(x) = ${frac(F.c+'(1 − ln x)','x²')}`,steps:[`נגזרת מנה: ${M(`(${F.c}·ln x)′·x − ${F.c}·ln x·(x)′`)} חלקי ${M('x²')} = ${M(F.c+'(1 − ln x)/x²')}`,`${M(`f′(${x0}) = ${F.c}(1 − ln${x0})/${x0*x0}`)} = ${M(f3(c))}`],tr};
+  case'F6':tr=[[1/(x0-F.p)+1/(x0-F.q),'log_rule'],[(F.q-F.p)/((x0-F.p)*(x0-F.q)),'deriv_rule'],[(x0-F.q)/(x0-F.p),'chain_rule']];
+   return{c,form:`f′(x) = ${frac(1,lin(F.p))} − ${frac(1,lin(F.q))}`,steps:[`לפי חוקי לוגריתמים: ${M(`f(x) = ln(${lin(F.p)}) − ln(${lin(F.q)})`)} (בתחום)`,`${M(`f′(${neg(x0)}) = 1/${neg(x0-F.p)} − 1/${neg(x0-F.q)}`)} = ${M(f3(c))}`],tr};
+ }
+}
+function qDer(){
+ const F=genFam(['F1','F2','F3','F4','F5','F6']);const x0=x0For(F);const d=derivInfo(F,x0);
+ const asks={F4:`מהו קצב השינוי של העלות הממוצעת כשמייצרים ${x0} אלפי רחפנים? (חשבו ${M(`f′(${x0})`)})`,F5:`מהו קצב השינוי של המדד אחרי ${x0} שעות? (חשבו ${M(`f′(${x0})`)})`};
+ return{topic:'der',skill:'der',F,ask:asks[F.id]||`חשבו את ${M(`f′(${neg(x0)})`)}. דייקו עד 3 ספרות אחרי הנקודה.`,
+  key:{d:d.c},x0,fields:[{k:'d',kind:'num',label:`f′(${neg(x0)}) =`}],check:v=>checkVal(v.d,d.c,d.tr),ans:M(f3(d.c)),sol:[M(d.form),...d.steps]};
+}
+function qTan(){
+ const F=genFam(['F1','F2','F3','F4','F5','F6']);const x0=x0For(F);const d=derivInfo(F,x0);const y0=F.f(x0),m=d.c,n=y0-m*x0;
+ const ntr=[[y0+m*x0,'tangent_n'],[y0,'tangent_n'],[-n,'tangent_n']];
+ return{topic:'der',skill:'tan',F,ask:`מצאו את משוואת המשיק לגרף f בנקודה שבה ${M('x = '+neg(x0))}, בצורה ${M('y = mx + n')}.`,
+  key:{m,n},x0,fields:[{k:'m',kind:'num',label:'m ='},{k:'n',kind:'num',label:'n ='}],
+  check:v=>combine([checkVal(v.m,m,d.tr),checkVal(v.n,n,ntr.concat(d.tr.map(([t])=>[y0-t*x0,'arithmetic'])))]),
+  ans:M(`y = ${f3(m)}x ${n<0?'−':'+'} ${f3(Math.abs(n))}`),
+  sol:[`נקודת ההשקה: ${M(`f(${neg(x0)}) = ${f3(y0)}`)}`,M(d.form),...d.steps.slice(1),`${M('n = f(x₀) − m·x₀ = '+f3(y0)+' − ('+f3(m)+')·('+neg(x0)+')')} = ${M(f3(n))}`]};
+}
+function qExt(){
+ const F=genFam(['F2','F3','F4','F5']);let x,y,type,xtr=[],ytr=[],ask,sol;
+ const T=['מקסימום','מינימום','לא נקודת קיצון'];
+ switch(F.id){
+  case'F3':x=F.m;y=F.f(x);type=0;xtr=[[F.a,'arithmetic'],[F.b,'arithmetic']];ytr=[[F.u(x),'forgot_ln'],[F.f(F.a+1),'ext_value']];
+   ask='באיזו נקודה האות/השמע הכי חזק? מצאו את נקודת הקיצון של f, את ערכה ואת סוגה.';
+   sol=[`${M('f′(x) = (−2x'+term(F.s,'')+')/u(x) = 0')} ⇒ ${M('x = '+f3(x))}`,`משמאל f′ > 0 ומימין f′ < 0 ⇒ מקסימום`,`${M('f('+f3(x)+') = ln('+f3(F.u(x))+')')} = ${M(f3(y))}`];break;
+  case'F4':x=F.k;y=F.k-F.k*Math.log(F.k);type=1;xtr=[[1,'ext_x_zero'],[1/F.k,'arithmetic']];ytr=[[F.k-Math.log(F.k),'log_rule'],[1-F.k/F.k,'ext_value'],[0,'ext_value']];
+   ask='כמה אלפי רחפנים כדאי לייצר כדי שהעלות הממוצעת תהיה מינימלית, ומה העלות? מצאו את נקודת הקיצון וקבעו את סוגה.';
+   sol=[`${M('f′(x) = 1 − '+F.k+'/x = (x − '+F.k+')/x = 0')} ⇒ ${M('x = '+F.k)}`,`ב-${M('0<x<'+F.k)} f′ < 0, וב-${M('x>'+F.k)} f′ > 0 ⇒ מינימום`,`${M(`f(${F.k}) = ${F.k} − ${F.k}·ln${F.k}`)} = ${M(f3(y))}`];break;
+  case'F5':x=Math.E;y=F.c/Math.E;type=0;xtr=[[1,'ext_x_zero'],[0,'arithmetic']];ytr=[[F.c*Math.E,'ext_value'],[F.c,'ext_value'],[0,'ext_value']];
+   ask='אחרי כמה שעות המדד מקסימלי? מצאו את נקודת הקיצון של f (אפשר לכתוב e), את ערכה ואת סוגה.';
+   sol=[`${M('f′(x) = '+F.c+'(1 − ln x)/x² = 0')} ⇒ ${M('ln x = 1')} ⇒ ${M('x = e ≈ 2.718')}`,`ב-${M('0<x<e')} f′ > 0, וב-${M('x>e')} f′ < 0 ⇒ מקסימום`,`${M(`f(e) = ${F.c}·1/e`)} = ${M(f3(y))}`];break;
+  case'F2':x=F.k;y=Math.log(2*F.k*F.k)-1;type=2;xtr=[[0,'arithmetic'],[F.root,'ext_x_zero']];ytr=[[Math.log(2*F.k*F.k),'ext_value'],[2*F.k*F.k-1,'forgot_ln']];
+   ask=`מצאו את הנקודה שבה ${M("f′(x) = 0")}, וקבעו אם היא נקודת קיצון.`;
+   sol=[`${M(`f′(x) = 2x/(x²+${F.k*F.k}) − 1/${F.k} = −(x − ${F.k})² / (${F.k}(x² + ${F.k*F.k}))`)}`,`${M("f′(x) = 0")} רק ב-${M('x = '+F.k)}, ומשני הצדדים ${M('f′ < 0')}: אין החלפת סימן ⇒ לא נקודת קיצון.`,`${M(`f(${F.k}) = ln(${2*F.k*F.k}) − 1`)} = ${M(f3(y))}`];break;
+ }
+ const topts=T.map((h,i)=>opt(h,i===type?null:(F.id==='F2'?'stationary_not_ext':(i===2?'ext_type':'ext_type'))));
+ return{topic:'ext',skill:'ext',F,ask,
+  key:{x,y},fields:[{k:'x',kind:'num',label:'x ='},{k:'y',kind:'num',label:'y ='},{k:'t',kind:'choice',opts:topts,label:'סוג הנקודה'}],
+  check:v=>{const rx=checkVal(v.x,x,xtr);const ry=rx.st==='ok'?checkVal(v.y,y,ytr):(checkVal(v.y,y,ytr).st==='ok'?{st:'ok'}:{st:'wrong',e:rx.e});const rt=checkChoice(v.t,topts);
+   const all=[rt,rx,ry];if(rt.st==='wrong'&&rt.e==='stationary_not_ext')return{st:(rx.st==='ok')?'partial':'wrong',e:'stationary_not_ext'};return combine(all)},
+  ans:`${M(`(${f3(x)}, ${f3(y)})`)} – ${T[type]}`,sol};
+}
+function qMono(){
+ const F=genFam(['F1','F2','F3','F4','F5','F6']);let o,sol;
+ const inc='עולה',dec='יורדת';
+ switch(F.id){
+  case'F1':o=[opt(`${dec} ב-${lt('x','<',F.a)}, ${inc} ב-${lt('x','>',F.b)}`),opt(`${inc} ב-${lt('x','<',F.a)}, ${dec} ב-${lt('x','>',F.b)}`,'mono_reversed'),opt(`${dec} ב-${lt('x','<',F.s/2)}, ${inc} ב-${lt('x','>',F.s/2)}`,'ignore_domain'),opt(`${inc} בכל התחום`,'mono_reversed')];
+   sol=[`${M('f′(x) = (2x'+term(-F.s,'')+')/u(x)')}`,`בתחום u > 0, ולכן הסימן של f′ הוא הסימן של ${M('2x'+term(-F.s,''))}`,`${M('x<'+neg(F.a))}: f′<0 (יורדת). ${M('x>'+neg(F.b))}: f′>0 (עולה).`];break;
+  case'F3':o=[opt(`${inc} ב-${M(`${neg(F.a)} < x < ${f3(F.m)}`)}, ${dec} ב-${M(`${f3(F.m)} < x < ${neg(F.b)}`)}`),opt(`${dec} ב-${M(`${neg(F.a)} < x < ${f3(F.m)}`)}, ${inc} ב-${M(`${f3(F.m)} < x < ${neg(F.b)}`)}`,'mono_reversed'),opt(`${inc} ב-${lt('x','<',f3(F.m))}, ${dec} ב-${lt('x','>',f3(F.m))}`,'ignore_domain'),opt(`${inc} בכל התחום`,'mono_reversed')];
+   sol=[`${M('f′(x) = (−2x'+term(F.s,'')+')/u(x)')}, ובתחום u > 0`,`f′ > 0 כש-${M('x < '+f3(F.m))} ו-f′ < 0 כש-${M('x > '+f3(F.m))}, בתוך התחום ${M(`${neg(F.a)} < x < ${neg(F.b)}`)}`];break;
+  case'F2':o=[opt(`${dec} לכל x`),opt(`${dec} ב-${lt('x','<',F.k)}, ${inc} ב-${lt('x','>',F.k)}`,'stationary_not_ext'),opt(`${inc} לכל x`,'mono_reversed'),opt(`${inc} ב-${lt('x','<',F.k)}, ${dec} ב-${lt('x','>',F.k)}`,'stationary_not_ext')];
+   sol=[`${M(`f′(x) = −(x − ${F.k})² / (${F.k}(x² + ${F.k*F.k}))`)} ≤ 0 לכל x`,`f′ מתאפסת רק בנקודה אחת, ולכן f יורדת לכל x.`];break;
+  case'F4':o=[opt(`${dec} ב-${M('0 < x < '+F.k)}, ${inc} ב-${lt('x','>',F.k)}`),opt(`${inc} ב-${M('0 < x < '+F.k)}, ${dec} ב-${lt('x','>',F.k)}`,'mono_reversed'),opt(`${dec} ב-${lt('x','<',F.k)}, ${inc} ב-${lt('x','>',F.k)}`,'ignore_domain'),opt(`${inc} לכל ${M('x>0')}`,'mono_reversed')];
+   sol=[`${M(`f′(x) = (x − ${F.k})/x`)}, ובתחום x > 0 הסימן הוא הסימן של ${M('x − '+F.k)}`,`יורדת ב-${M('0<x<'+F.k)}, עולה ב-${M('x>'+F.k)}`];break;
+  case'F5':o=[opt(`${inc} ב-${M('0 < x < e')}, ${dec} ב-${lt('x','>','e')}`),opt(`${dec} ב-${M('0 < x < e')}, ${inc} ב-${lt('x','>','e')}`,'mono_reversed'),opt(`${inc} ב-${M('0 < x < 1')}, ${dec} ב-${lt('x','>',1)}`,'ext_x_zero'),opt(`${dec} לכל ${M('x>0')}`,'mono_reversed')];
+   sol=[`${M(`f′(x) = ${F.c}(1 − ln x)/x²`)}: הסימן הוא הסימן של ${M('1 − ln x')}`,`${M('1 − ln x > 0 ⇔ x < e')}: עולה ב-${M('0<x<e')}, יורדת ב-${M('x>e')}`];break;
+  case'F6':o=[opt(`${dec} ב-${lt('x','<',F.p)} וגם ${dec} ב-${lt('x','>',F.q)}`),opt(`${inc} ב-${lt('x','<',F.p)} וגם ${inc} ב-${lt('x','>',F.q)}`,'mono_reversed'),opt(`${dec} לכל x`,'mono_union'),opt(`${inc} ב-${lt('x','<',F.p)}, ${dec} ב-${lt('x','>',F.q)}`,'mono_reversed')];
+   sol=[`${M(`f′(x) = ${neg(F.p-F.q)} / ((${lin(F.p)})(${lin(F.q)}))`)}`,`בתחום המכפלה במכנה חיובית, והמונה ${neg(F.p-F.q)} < 0 ⇒ f′ < 0`,'f יורדת בכל אחד מהקטעים בנפרד. אי אפשר לומר "יורדת לכל x" כי באמצע יש קפיצה.'];break;
+ }
+ const opts=shuffle(o);
+ return{topic:'ext',skill:'mono',F,ask:'מהם תחומי העלייה והירידה של f?',fields:[{k:'c',kind:'choice',opts}],check:v=>checkChoice(v.c,opts),ans:o[0].h,sol};
+}
+/* ---- plotting ---- */
+function plot(fn,win,Y,vas=[],hz=null,col='#22d3ee'){
+ const W=260,H=180,[x0,x1]=win,X=x=>((x-x0)/(x1-x0)*W).toFixed(1),Yp=y=>(H/2-y/Y*(H/2-10)).toFixed(1);
+ let s=`<svg viewBox="0 0 ${W} ${H}" class="plot" xmlns="http://www.w3.org/2000/svg" direction="ltr">`;
+ if(x0<0&&x1>0)s+=`<line x1="${X(0)}" y1="4" x2="${X(0)}" y2="${H-4}" stroke="#8b93a9" stroke-width="1.2"/><path d="M${X(0)-4},10 L${X(0)},3 L${+X(0)+4},10" fill="none" stroke="#8b93a9" stroke-width="1.2"/>`;
+ s+=`<line x1="2" y1="${Yp(0)}" x2="${W-3}" y2="${Yp(0)}" stroke="#8b93a9" stroke-width="1.2"/><path d="M${W-10},${Yp(0)-4} L${W-3},${Yp(0)} L${W-10},${+Yp(0)+4}" fill="none" stroke="#8b93a9" stroke-width="1.2"/>`;
+ for(const a of vas)s+=`<line x1="${X(a)}" y1="2" x2="${X(a)}" y2="${H-2}" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="4 4" opacity=".8"/>`;
+ if(hz!=null&&hz!==0)s+=`<line x1="0" y1="${Yp(hz)}" x2="${W}" y2="${Yp(hz)}" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="4 4" opacity=".8"/>`;
+ if(hz===0)s+=`<line x1="0" y1="${Yp(0)}" x2="${W}" y2="${Yp(0)}" stroke="#fbbf24" stroke-width="1.3" stroke-dasharray="4 4" opacity=".55"/>`;
+ const N=700,lim=Y*1.12;let segs=[],cur=[],lastOut=null,px=null;
+ for(let i=0;i<=N;i++){
+  const x=x0+(x1-x0)*i/N,y=fn(x);
+  if(px!=null&&vas.some(a=>a>px&&a<x)){if(cur.length>1)segs.push(cur);cur=[];lastOut=null}
+  px=x;
+  if(!isFinite(y)){if(cur.length>1)segs.push(cur);cur=[];lastOut=null;continue}
+  if(Math.abs(y)>lim){const c=[x,Math.sign(y)*lim];if(cur.length){cur.push(c);segs.push(cur);cur=[]}lastOut=c;continue}
+  if(!cur.length&&lastOut)cur.push(lastOut);
+  lastOut=null;cur.push([x,y]);
+ }
+ if(cur.length>1)segs.push(cur);
+ const d=segs.map(sg=>'M'+sg.map(([x,y])=>X(x)+','+Yp(y)).join(' L')).join(' ');
+ s+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="5" opacity=".18" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${col}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+ s+=`<text x="${W-8}" y="${+Yp(0)+15}" fill="#8b93a9" font-size="11" font-family="JetBrains Mono">x</text>`;
+ if(x0<0&&x1>0)s+=`<text x="${+X(0)+6}" y="12" fill="#8b93a9" font-size="11" font-family="JetBrains Mono">y</text>`;
+ return s+'</svg>';
+}
+function yScale(F){const v=[];const [a,b]=F.win;for(let i=0;i<=400;i++){const y=F.f(a+(b-a)*i/400);if(isFinite(y))v.push(Math.abs(y))}v.sort((p,q)=>p-q);const q=v[Math.floor(v.length*.8)]||2;return Math.max(2.2,Math.min(8,q*1.4))}
+function famPlot(F,col){return plot(F.f,F.win,yScale(F),F.vas,F.hz,col)}
+function qGraph(){
+ const F=genFam(['F1','F2','F3','F4','F5','F6']);const Y=yScale(F);
+ const lnPos=u=>u>0?Math.log(u):NaN;let alts;
+ switch(F.id){
+  case'F1':alts=[[x=>-F.f(x),F.vas,null,'graph_reflect'],[x=>lnPos(-F.u(x)),F.vas,null,'graph_domain'],[x=>lnPos((x-F.a)/(x-F.b)),F.vas,0,'graph_mono']];break;
+  case'F3':alts=[[x=>-F.f(x),F.vas,null,'graph_reflect'],[x=>lnPos(F.u(x)*-1),F.vas,null,'graph_domain'],[x=>-lnPos(-F.u(x)),F.vas,null,'graph_domain']];break;
+  case'F2':alts=[[x=>-F.f(x),[],null,'graph_reflect'],[x=>Math.log(x*x+F.k*F.k)+x/F.k,[],null,'graph_mono'],[x=>Math.log(x*x+F.k*F.k)-1.2,[],null,'graph_mono']];break;
+  case'F4':alts=[[x=>-F.f(x),[0],null,'graph_reflect'],[x=>x>0?x+F.k*Math.log(x):NaN,[0],null,'graph_mono'],[x=>x<0?-x-F.k*Math.log(-x):NaN,[0],null,'graph_domain']];break;
+  case'F5':alts=[[x=>-F.f(x),[0],0,'graph_reflect'],[x=>x>0?F.c*x*Math.log(x)/4:NaN,[0],null,'graph_mono'],[x=>x<0?F.c*Math.log(-x)/(-x):NaN,[0],0,'graph_domain']];break;
+  case'F6':alts=[[x=>-F.f(x),F.vas,0,'graph_reflect'],[x=>lnPos((x-F.p)*(x-F.q)),F.vas,null,'graph_mono'],[x=>lnPos(-(x-F.p)*(x-F.q)),F.vas,null,'graph_domain']];break;
+ }
+ const items=shuffle([{fn:F.f,vas:F.vas,hz:F.hz,e:null},...alts.map(([fn,vas,hz,e])=>({fn,vas,hz,e}))]);
+ const L=['I','II','III','IV'];
+ const opts=items.map((it,i)=>({h:`<div class="gl">${L[i]}</div>${plot(it.fn,F.win,Y,it.vas,it.hz)}`,e:it.e,lab:'גרף '+L[i]}));
+ const ci=items.findIndex(it=>!it.e);
+ const feat={F1:`תחום ${domTxt(F)}, אסימפטוטות ${M('x='+neg(F.a))}, ${M('x='+neg(F.b))}; יורדת משמאל ועולה מימין.`,F3:`תחום ${domTxt(F)}; מקסימום ב-${M('x='+f3(F.m))}; יורדת ל-−∞ בשני הקצוות.`,F2:`מוגדרת לכל x; ${M('f(0) = '+f3(F.f(0)))}; יורדת תמיד, עם "מדרגה" שטוחה ב-${M('x='+F.k)}.`,F4:`תחום ${M('x>0')}; ${M('f→∞')} כש-${M('x→0⁺')}; מינימום ב-${M('x='+F.k)}.`,F5:`תחום ${M('x>0')}; ${M('f→−∞')} כש-${M('x→0⁺')}; מקסימום ב-${M('x=e')}; ${M('f→0')} כש-${M('x→∞')}.`,F6:`תחום ${domTxt(F)}; אסימפטוטות ${M('x='+neg(F.p))}, ${M('x='+neg(F.q)) } וגם ${M('y=0')}; יורדת בכל קטע.`}[F.id];
+ return{topic:'graph',skill:'graph',F,ask:'איזה מהגרפים מתאר את f? נמקו לעצמכם לפני שבוחרים: תחום, אסימפטוטות, עלייה וירידה.',
+  fields:[{k:'c',kind:'choice',opts,graph:true}],check:v=>checkChoice(v.c,opts),ans:`גרף ${L[ci]}`,sol:[feat,`<div class="rplot">${famPlot(F,'#34d399')}</div>`]};
+}
+function qZeros(){
+ const F=genFam(['F1','F3']);let r1,r2,sol;
+ if(F.id==='F1'){const D=F.s*F.s-4*(F.p-1);r1=(F.s-Math.sqrt(D))/2;r2=(F.s+Math.sqrt(D))/2;
+  sol=[`${M('ln u = 0 ⇔ u = 1')}: ${M(poly2(F.s,F.p)+' = 1')}`,`${M(poly2(F.s,F.p-1)+' = 0')}`,`${M(`x = (${neg(F.s)} ± √${D}) / 2`)} ⇒ ${M('x₁ = '+f3(r1))}, ${M('x₂ = '+f3(r2))}`,`שתי הנקודות בתחום (${domTxt(F)}) ✓`]}
+ else{const D=F.s*F.s-4*(F.p+1);r1=(F.s-Math.sqrt(D))/2;r2=(F.s+Math.sqrt(D))/2;
+  sol=[`${M('ln u = 0 ⇔ u = 1')}: ${M('−x²'+term(F.s,'x')+term(-F.p,'')+' = 1')}`,`${M(poly2(F.s,F.p+1)+' = 0')}`,`${M(`x = (${neg(F.s)} ± √${D}) / 2`)} ⇒ ${M('x₁ = '+f3(r1))}, ${M('x₂ = '+f3(r2))}`]}
+ const ask=F.id==='F3'?'האות חלש מדי כש-f(x) < 0. מצאו את הנקודות שבהן f(x) = 0 (נקודות החיתוך עם ציר ה-x), בדיוק של 3 ספרות.':'מצאו את נקודות החיתוך של גרף f עם ציר ה-x. דייקו עד 3 ספרות אחרי הנקודה.';
+ return{topic:'ineq',skill:'zeros',F,ask,key:{a:r1,b:r2},fields:[{k:'a',kind:'num',label:'x₁ (הקטן)'},{k:'b',kind:'num',label:'x₂ (הגדול)'}],
+  check:v=>{let A=evalExpr(v.a),B=evalExpr(v.b);let va=v.a,vb=v.b;if(isFinite(A)&&isFinite(B)&&A!=null&&B!=null&&A>B){[va,vb]=[vb,va]}
+   const tr=[[F.a,'ln_zero'],[F.b,'ln_zero']];return combine([checkVal(va,r1,tr),checkVal(vb,r2,tr)])},
+  ans:`${M('x₁ = '+f3(r1))}, ${M('x₂ = '+f3(r2))}`,sol};
+}
+function qIneq(){
+ const F=genFam(['F2','F5','F6']);
+ if(F.id==='F2'){
+  const dopts=[opt(M('x ≤ x₀')),opt(M('x ≥ x₀'),'ineq_direction')];
+  return{topic:'ineq',skill:'ineq',F,ask:`לאילו ערכי x המודל הלוגריתמי גבוה או שווה למודל הליניארי, כלומר ${M('ln(x²+'+F.k*F.k+') ≥ '+(F.k===1?'x':'x/'+F.k))}? מצאו את נקודת הגבול ${M('x₀')} (3 ספרות) ואת הכיוון.`,
+   key:{x:F.root},fields:[{k:'x',kind:'num',label:'x₀ ='},{k:'d',kind:'choice',opts:dopts,label:'הפתרון'}],
+   check:v=>combine([checkVal(v.x,F.root,[[F.k,'ineq_used_stationary'],[0,'arithmetic']]),checkChoice(v.d,dopts)]),
+   ans:`${M('x ≤ '+f3(F.root))}`,
+   sol:[`האי-שוויון שקול ל-${M('f(x) ≥ 0')}.`,`f יורדת לכל x (${M("f′ ≤ 0")}), ולכן יש לה נקודת אפס אחת בלבד.`,F.k===1?`${M('f(0) = ln1 − 0 = 0')}, ולכן ${M('x₀ = 0')}`:`${M('f(0) = '+f3(F.f(0))+' > 0')}. בהצבות או במחשבון גרפי: ${M('x₀ ≈ '+f3(F.root))}`,`f יורדת ⇒ ${M('f ≥ 0')} משמאל לאפס: ${M('x ≤ '+f3(F.root))}`]};
+ }
+ let o,ask,sol;
+ if(F.id==='F5'){o=[opt(M('0 < x < 1')),opt(lt('x','<',1),'ignore_domain'),opt(lt('x','>',1),'ineq_direction'),opt(M('0 < x < e'),'ineq_used_stationary')];
+  ask='לאילו ערכי x המדד שלילי (f(x) < 0)?';sol=[`המכנה x > 0 בתחום, ולכן הסימן של f הוא הסימן של ${M('ln x')}.`,`${M('ln x < 0 ⇔ 0 < x < 1')}`]}
+ else{o=[opt(lt('x','>',F.q)),opt(lt('x','<',F.p),'ineq_direction'),opt(`${lt('x','<',F.p)} או ${lt('x','>',F.q)}`,'ineq_all'),opt(M(`${neg(F.p)} < x < ${neg(F.q)}`),'dom_reversed')];
+  ask='לאילו ערכי x ההגבר חיובי (f(x) > 0)?';sol=[`${M(`f > 0 ⇔ (${lin(F.p)})/(${lin(F.q)}) > 1`)} (בתחום)`,`${M(`(${lin(F.p)})/(${lin(F.q)}) − 1 = ${F.q-F.p}/(${lin(F.q)}) > 0`)} ⇔ ${M('x > '+neg(F.q))}`,'בצד השני של התחום השבר קטן מ-1, ולכן שם f < 0.']}
+ const opts=shuffle(o);
+ return{topic:'ineq',skill:'ineq',F,ask,fields:[{k:'c',kind:'choice',opts}],check:v=>checkChoice(v.c,opts),ans:o[0].h,sol};
+}
+/* ================= meta ================= */
+const TOPICS={
+ dom:{n:'תחום וחיתוכים',ic:'D(f)',c:'#22d3ee'},
+ asym:{n:'אסימפטוטות',ic:'x→∞',c:'#a78bfa'},
+ der:{n:'נגזרת ומשיק',ic:"f′(x)",c:'#a3e635'},
+ ext:{n:'קיצון ומונוטוניות',ic:'max/min',c:'#f472b6'},
+ graph:{n:'זיהוי גרפים',ic:'I-IV',c:'#60a5fa'},
+ ineq:{n:'אפסים ואי-שוויונות',ic:'f ≥ 0',c:'#fbbf24'}
+};
+const SK={
+ dom:{t:'dom',n:'תחום הגדרה',g:qDom,w:1.5},yint:{t:'dom',n:'חיתוך עם ציר y',g:qYint,w:1},
+ asym:{t:'asym',n:'אסימפטוטות',g:qAsym,w:1.5},
+ der:{t:'der',n:'חישוב נגזרת',g:qDer,w:1.4},tan:{t:'der',n:'משוואת משיק',g:qTan,w:1.4},
+ ext:{t:'ext',n:'נקודות קיצון',g:qExt,w:1.5},mono:{t:'ext',n:'עלייה וירידה',g:qMono,w:1.3},
+ graph:{t:'graph',n:'התאמת גרף',g:qGraph,w:1.3},
+ zeros:{t:'ineq',n:'נקודות אפס',g:qZeros,w:1.2},ineq:{t:'ineq',n:'אי-שוויונות',g:qIneq,w:1.3}
+};
+const RANKS=['טירון','מתקדם','אנליטיקאי','מהנדס','מאסטר','אגדה'];const LV=150;
+/* ================= state ================= */
+const KEY='calc12-v1';
+const blank=()=>({name:'',xp:0,sets:[],days:[]});
+let S=(()=>{try{const r=localStorage.getItem(KEY);if(r)return Object.assign(blank(),JSON.parse(r))}catch(e){}return blank()})();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const val=st=>st==='ok'?1:st==='partial'?.5:0;
+const items=()=>S.sets.flatMap(s=>s.items);
+function skAcc(k){const h=items().filter(i=>i.s===k).slice(-10);return(h.reduce((a,i)=>a+val(i.st),0)+1.5)/(h.length+3)}
+const skW=k=>SK[k].w*(0.35+1.65*(1-skAcc(k)));
+function tAcc(t,n=15){const h=items().filter(i=>SK[i.s]&&SK[i.s].t===t).slice(-n);return{n:items().filter(i=>SK[i.s]&&SK[i.s].t===t).length,acc:h.length?h.reduce((a,i)=>a+val(i.st),0)/h.length:null}}
+function wpick(arr,wf){const ws=arr.map(wf);let r=Math.random()*ws.reduce((a,b)=>a+b,0);for(let i=0;i<arr.length;i++){r-=ws[i];if(r<=0)return arr[i]}return arr[arr.length-1]}
+function buildSet(){
+ const tl=Object.keys(TOPICS),tw=t=>Object.keys(SK).filter(k=>SK[k].t===t).reduce((a,k)=>a+skW(k),0);
+ const chosen=[];const pool=tl.slice();while(chosen.length<5){const t=wpick(pool,tw);chosen.push(t);pool.splice(pool.indexOf(t),1)}
+ return chosen.map(t=>{const k=wpick(Object.keys(SK).filter(x=>SK[x].t===t),skW);const q=SK[k].g();q.skill=k;q.topic=t;return q});
+}
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+function streak(){const set=new Set(S.days);let n=0;const d=new Date();if(!set.has(today()))d.setDate(d.getDate()-1);while(set.has(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate())){n++;d.setDate(d.getDate()-1)}return n}
+const lvl=()=>{const i=Math.floor(S.xp/LV);return{i,name:RANKS[Math.min(i,RANKS.length-1)],pct:S.xp%LV/LV*100,left:LV-S.xp%LV}};
+/* ================= UI ================= */
+const app=document.getElementById('app');let view='home',cur=null;
+function render(){({home,set:setView,res,stats})[view]();window.scrollTo({top:0,behavior:'instant'})}
+const go=v=>{view=v;render()};
+function home(){
+ const L=lvl(),all=items(),acc=all.length?Math.round(all.reduce((a,i)=>a+val(i.st),0)/all.length*100):null;
+ const ready=Math.round(Object.keys(TOPICS).reduce((a,t)=>{const s=tAcc(t);return a+(s.acc==null?0:s.acc*Math.min(1,s.n/6))},0)/6*100);
+ const tg=Object.entries(TOPICS).map(([k,t])=>{const s=tAcc(k);return `<div class="tc" style="--c:${t.c}"><div class="ic">${t.ic}</div><div class="nm">${t.n}</div><div class="bar"><i style="width:${s.acc==null?0:Math.round(s.acc*100)}%"></i></div><div class="pc"><span>${s.acc==null?'עוד לא תורגל':Math.round(s.acc*100)+'%'}</span><span>${s.n} שאלות</span></div></div>`}).join('');
+ app.innerHTML=`<div class="hero"><span class="logo">CALC<b>//</b>12</span>
+ <h1>${S.name?'מה קורה, '+esc(S.name)+'?':'מוכן לבגרות?'}</h1><div class="sub">חקירת פונקציות לוגריתמיות: סטים קצרים של 5 שאלות, כל פעם מנושא אחר.</div>
+ <div class="rank"><span class="tag">LVL ${L.i+1} · ${L.name}</span><div class="xp"><i style="width:${L.pct}%"></i></div></div>
+ <div class="kpis"><div class="kpi"><b>${S.xp}</b><span>XP</span></div><div class="kpi"><b>${streak()}🔥</b><span>ימים ברצף</span></div><div class="kpi"><b>${acc==null?'—':acc+'%'}</b><span>דיוק</span></div><div class="kpi"><b>${ready}%</b><span>מוכנות לבגרות</span></div></div></div>
+ <div class="cta"><button class="btn" id="go">▶ &nbsp;סט חדש</button></div>
+ <div class="note">עוד ${L.left} XP לרמה הבאה · אפשר להקליד גם ביטויים כמו <span class="m">ln2-1</span> או <span class="m">2/e</span></div>
+ <div class="sect"><h2>הנושאים</h2><span class="mut" style="font-size:13px">התרגול מתמקד אוטומטית בנושאים החלשים</span></div>
+ <div class="tgrid">${tg}</div>
+ <div class="foot"><button class="link" id="nm">✏️ ${S.name?'שינוי שם':'הוספת שם'}</button><button class="link" id="st">📊 סטטיסטיקה</button></div>`;
+ document.getElementById('go').onclick=startSet;document.getElementById('st').onclick=()=>go('stats');document.getElementById('nm').onclick=askName;
+ if(!S.name&&!S.sets.length&&!home.asked){home.asked=true;setTimeout(askName,300)}
+}
+function askName(){
+ const o=document.createElement('div');o.className='ov';
+ o.innerHTML=`<div class="mod"><p>איך קוראים לך?</p><input class="inp" id="ni" maxlength="20" value="${esc(S.name)}"><div class="cta" style="margin:0"><button class="btn sm" data-y>שמירה</button><button class="btn ghost sm" data-n>דילוג</button></div></div>`;
+ document.body.appendChild(o);const i=o.querySelector('#ni');i.focus();
+ const ok=()=>{S.name=i.value.trim();save();o.remove();render()};o.querySelector('[data-y]').onclick=ok;i.onkeydown=e=>{if(e.key==='Enter')ok()};o.querySelector('[data-n]').onclick=()=>o.remove();
+}
+function modal(t,[y,n]){return new Promise(r=>{const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class="mod"><p>${t}</p><div class="cta" style="margin:0"><button class="btn sm" data-y>${y}</button><button class="btn ghost sm" data-n>${n}</button></div></div>`;document.body.appendChild(o);o.querySelector('[data-y]').onclick=()=>{o.remove();r(true)};o.querySelector('[data-n]').onclick=()=>{o.remove();r(false)}})}
+function startSet(){cur={n:S.sets.length+1,qs:buildSet()};go('set')}
+function fieldHtml(f,i){
+ if(f.kind==='num')return `<div class="fld"><label dir="auto">${f.label}</label><input class="inp" data-i="${i}" data-k="${f.k}" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="text"><div class="pv"></div></div>`;
+ return `<div class="fld" style="flex-basis:100%">${f.label?`<label>${f.label}</label>`:''}<div class="opts ${f.graph?'gr':''}" data-i="${i}" data-k="${f.k}">${f.opts.map((o,j)=>`<button class="opt ${f.graph?'g':''}" data-j="${j}">${o.h}</button>`).join('')}</div></div>`;
+}
+function setView(){
+ app.innerHTML=`<div class="ph"><h2><span class="logo">SET</span> #${cur.n}</h2><div class="prog">${cur.qs.map((_,i)=>`<i data-p="${i}"></i>`).join('')}</div><button class="link" id="x">✕ יציאה</button></div>
+ ${cur.qs.map((q,i)=>{const t=TOPICS[q.topic];return `<div class="q" style="--c:${t.c};animation-delay:${i*.06}s"><div class="qh"><span class="qn">Q${i+1}</span><span class="chip">${t.n}</span><span class="mut" style="font-size:13px">${SK[q.skill].n}</span></div>
+ <div class="ctx">${q.F.ctx}</div><div class="fx">${q.F.html}</div><div class="ask">${q.ask}</div>
+ <div class="fields">${q.fields.map(f=>fieldHtml(f,i)).join('')}</div></div>`}).join('')}
+ <div class="cta"><button class="btn" id="sub">סיימתי – לבדיקה ⚡</button></div>`;
+ const sel={};
+ const upd=()=>cur.qs.forEach((q,i)=>{const done=q.fields.every(f=>f.kind==='num'?(app.querySelector(`.inp[data-i="${i}"][data-k="${f.k}"]`).value.trim()):(sel[i+'_'+f.k]!=null));app.querySelector(`[data-p="${i}"]`).classList.toggle('on',done)});
+ app.querySelectorAll('.inp').forEach((el,idx,all)=>{
+  el.addEventListener('input',()=>{const pv=el.nextElementSibling,v=el.value.trim();if(!v){pv.textContent='';pv.classList.remove('bad')}else{const n=evalExpr(v);if(n==null||!isFinite(n)){pv.textContent='?';pv.classList.add('bad')}else{pv.textContent=/^[-−]?\d*\.?\d+$/.test(v)?'':'≈ '+f3(n);pv.classList.remove('bad')}}upd()});
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const nx=all[idx+1];nx?nx.focus():document.getElementById('sub').focus()}});
+ });
+ app.querySelectorAll('.opts').forEach(g=>g.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{g.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel[g.dataset.i+'_'+g.dataset.k]=b.dataset.j;upd()}));
+ document.getElementById('x').onclick=async()=>{if(await modal('לצאת מהסט? התשובות לא יישמרו.',['לצאת','להישאר']))go('home')};
+ document.getElementById('sub').onclick=async()=>{
+  const vals=cur.qs.map((q,i)=>{const o={};q.fields.forEach(f=>{o[f.k]=f.kind==='num'?app.querySelector(`.inp[data-i="${i}"][data-k="${f.k}"]`).value:sel[i+'_'+f.k]});return o});
+  const missing=vals.filter((v,i)=>cur.qs[i].fields.some(f=>v[f.k]==null||String(v[f.k]).trim()==='')).length;
+  if(missing&&!(await modal(`${missing===1?'שאלה אחת לא הושלמה':missing+' שאלות לא הושלמו'}. לבדוק בכל זאת?`,['לבדוק','לחזור'])))return;
+  cur.vals=vals;finish();
+ };
+}
+function finish(){
+ cur.res=cur.qs.map((q,i)=>{try{return q.check(cur.vals[i])}catch(e){return{st:'wrong',e:'arithmetic'}}});
+ const sc=cur.res.filter(r=>r.st==='ok').length;let xp=cur.res.reduce((a,r)=>a+(r.st==='ok'?20:r.st==='partial'?8:0),0);if(sc===5)xp+=40;else if(sc===4)xp+=15;
+ const before=lvl().i;S.xp+=xp;
+ S.sets.push({t:Date.now(),score:sc,items:cur.qs.map((q,i)=>({s:q.skill,st:cur.res[i].st,e:cur.res[i].e||null}))});if(S.sets.length>250)S.sets=S.sets.slice(-250);
+ if(!S.days.includes(today()))S.days.push(today());if(S.days.length>150)S.days=S.days.slice(-150);
+ cur.xp=xp;cur.sc=sc;cur.up=lvl().i>before;save();go('res');if(sc>=4)setTimeout(burst,200);
+}
+function userAns(q,v){return q.fields.map(f=>{const x=v[f.k];if(x==null||String(x).trim()==='')return '—';if(f.kind==='num')return (q.fields.length>1?f.label+' ':'')+M(esc(x));const o=f.opts[+x];return o.lab||o.h}).join(' · ')}
+function res(){
+ const sc=cur.sc;const msg=sc===5?pick(['מושלם. ככה ניגשים לבגרות 🏆','5/5 – סט נקי ⚡']):sc===4?pick(['כמעט מושלם 💪','חזק! עוד טעות אחת לתקן']):sc>=2?pick(['בכיוון הנכון – עכשיו מתקנים 🔧','יש על מה לעבוד, וזה בדיוק המטרה']):pick(['סט קשה. הטעויות למטה הן הזהב 🧠','כל טעות כאן היא טעות שלא תהיה בבגרות']);
+ const good=[],work=[];cur.qs.forEach((q,i)=>{const r=cur.res[i];r.st==='ok'?good.push(SK[q.skill].n):work.push(`${SK[q.skill].n}: ${(ERR[r.e]||ERR.arithmetic)[0]}`)});
+ app.innerHTML=`<div class="rh"><span class="logo">SET #${cur.n} · RESULTS</span><div class="big">${sc}/5</div><div class="msg">${msg}</div>
+ <span class="pill">+${cur.xp} XP</span>${cur.up?`<span class="pill" style="color:var(--cy);border-color:rgba(34,211,238,.4);background:rgba(34,211,238,.1)">LEVEL UP → ${lvl().name}</span>`:''}
+ <div class="sum"><div class="g"><h3>✅ מה עבד</h3>${good.length?`<ul>${good.map(x=>`<li>${x}</li>`).join('')}</ul>`:'<span class="mut">בסט הבא</span>'}</div><div class="w"><h3>🎯 על מה לעבוד</h3>${work.length?`<ul>${work.map(x=>`<li>${x}</li>`).join('')}</ul>`:'<span class="mut">כלום. סט נקי.</span>'}</div></div></div>
+ ${cur.qs.map((q,i)=>{const r=cur.res[i],t=TOPICS[q.topic],er=ERR[r.e]||ERR.arithmetic;return `<div class="rc ${r.st}" style="--c:${t.c}"><div class="rt"><span class="ri">${r.st==='ok'?'✓':r.st==='partial'?'½':'✗'}</span><span class="chip">${t.n}</span><b>${SK[q.skill].n}</b></div>
+ <div class="fx">${q.F.html}</div><div class="rq">${q.ask}</div>
+ <div class="ans"><div class="${r.st==='ok'?'good':'bad'}">התשובה שלך: <b>${userAns(q,cur.vals[i])}</b></div>${r.st==='ok'?'':`<div class="good">התשובה הנכונה: <b>${q.ans}</b></div>`}</div>
+ ${r.st==='ok'?'':`<div class="err"><b>${r.st==='partial'?'כמעט · ':''}אופי הטעות: ${er[0]}</b><p>💡 ${er[1]}</p></div>`}
+ <details ${r.st==='ok'?'':'open'}><summary>הפתרון המלא</summary><ol class="sol">${q.sol.map(s=>`<li>${s}</li>`).join('')}</ol></details></div>`}).join('')}
+ <div class="cta"><button class="btn" id="nx">הסט הבא ←</button><button class="btn ghost" id="hm">מסך הבית</button></div>`;
+ document.getElementById('nx').onclick=startSet;document.getElementById('hm').onclick=()=>go('home');
+}
+function stats(){
+ const all=items(),bar=(p,c)=>`<div class="mb"><i style="width:${Math.round((p||0)*100)}%;background:${c}"></i></div>`;
+ const tr=Object.entries(TOPICS).map(([k,t])=>{const a=tAcc(k,9999),r=tAcc(k,10);return `<tr><td>${t.n}</td><td>${a.n}</td><td>${a.acc==null?'—':Math.round(a.acc*100)+'%'}</td><td>${r.acc==null?'—':Math.round(r.acc*100)+'%'}</td><td style="width:26%">${bar(r.acc,t.c)}</td></tr>`}).join('');
+ const sr=Object.entries(SK).map(([k,s])=>{const h=all.filter(i=>i.s===k);const a=h.length?h.reduce((x,i)=>x+val(i.st),0)/h.length:null;return `<tr><td>${s.n}</td><td>${h.length}</td><td>${a==null?'—':Math.round(a*100)+'%'}</td><td style="width:30%">${bar(a,TOPICS[s.t].c)}</td></tr>`}).join('');
+ const ec={};all.forEach(i=>{if(i.st!=='ok'&&i.e&&i.e!=='blank')ec[i.e]=(ec[i.e]||0)+1});
+ const er=Object.entries(ec).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([e,c])=>`<li style="margin:8px 0"><span class="cnt">${c}</span><b>${ERR[e][0]}</b><div class="mut" style="font-size:13.5px;margin-right:38px">${ERR[e][1]}</div></li>`).join('');
+ const hist=S.sets.slice(-12).reverse().map(s=>{const d=new Date(s.t);return `<tr><td>${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</td><td class="mono">${s.score}/5</td><td style="width:45%">${bar(s.score/5,'linear-gradient(90deg,#22d3ee,#a78bfa)')}</td></tr>`}).join('');
+ app.innerHTML=`<div class="ph"><h2>📊 סטטיסטיקה</h2><button class="link" id="bk">← חזרה</button></div>
+ <div class="kpis" style="margin-top:14px"><div class="kpi"><b>${S.sets.length}</b><span>סטים</span></div><div class="kpi"><b>${all.length}</b><span>שאלות</span></div><div class="kpi"><b>${all.length?Math.round(all.reduce((a,i)=>a+val(i.st),0)/all.length*100)+'%':'—'}</b><span>דיוק</span></div><div class="kpi"><b>${S.days.length}</b><span>ימי אימון</span></div></div>
+ <div class="panel"><h3>לפי נושא</h3><table><tr><th>נושא</th><th>שאלות</th><th>כולל</th><th>10 אחרונות</th><th></th></tr>${tr}</table></div>
+ <div class="panel"><h3>טעויות חוזרות</h3>${er?`<ul style="list-style:none;padding:0;margin:0">${er}</ul>`:'<span class="mut">עוד אין נתונים.</span>'}</div>
+ <div class="panel"><h3>לפי מיומנות</h3><table><tr><th>מיומנות</th><th>שאלות</th><th>דיוק</th><th></th></tr>${sr}</table></div>
+ <div class="panel"><h3>סטים אחרונים</h3>${hist?`<table>${hist}</table>`:'<span class="mut">עוד אין סטים.</span>'}</div>
+ <div class="note">הנתונים נשמרים רק בדפדפן הזה, במכשיר הזה.</div>
+ <div class="cta"><button class="btn ghost sm" id="rs" style="color:var(--bad)">איפוס התקדמות</button></div>`;
+ document.getElementById('bk').onclick=()=>go('home');
+ document.getElementById('rs').onclick=async()=>{if(await modal('למחוק את כל ההתקדמות? אי אפשר לבטל.',['למחוק','ביטול'])){S=blank();save();go('home')}};
+}
+function burst(){
+ const c=document.createElement('canvas');c.className='burst';document.body.appendChild(c);const x=c.getContext('2d'),W=c.width=innerWidth,H=c.height=innerHeight;
+ const cols=['#22d3ee','#a78bfa','#f472b6','#a3e635','#fbbf24'];const ps=Array.from({length:120},()=>{const a=Math.random()*Math.PI*2,v=4+Math.random()*9;return{x:W/2,y:H*.3,vx:Math.cos(a)*v,vy:Math.sin(a)*v-3,c:pick(cols),r:2+Math.random()*3,l:1}});
+ const t0=performance.now();(function f(t){x.clearRect(0,0,W,H);for(const p of ps){p.x+=p.vx;p.y+=p.vy;p.vy+=.18;p.vx*=.985;p.l-=.009;x.globalAlpha=Math.max(0,p.l);x.fillStyle=p.c;x.shadowColor=p.c;x.shadowBlur=10;x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()}if(t-t0<2600)requestAnimationFrame(f);else c.remove()})(t0);
+}
+render();
+</script>
+</body>
+</html>

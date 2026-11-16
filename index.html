@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>המסע המתמטי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b2350;--muted:#6f6790;--line:#e7e2f7;--ratio:#7c5cff;--pct:#ff4f8b;--pyth:#0fa894;--ang:#ff8a00;--ok:#16a34a;--bad:#e11d48;--part:#d97706}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,#ffe3f1 0%,#ece8ff 45%,#dcf6f1 100%);background-attachment:fixed;min-height:100vh;font-size:17px;line-height:1.55}
+.wrap{max-width:780px;margin:0 auto;padding:18px 14px 70px}
+h1,h2,h3,.disp{font-family:'Secular One',Rubik,sans-serif;font-weight:400;margin:0;line-height:1.25}
+.m{unicode-bidi:isolate;direction:ltr;display:inline-block;white-space:nowrap;font-weight:700;font-family:Rubik}
+button{font-family:inherit;cursor:pointer;border:0}
+.muted{color:var(--muted)}
+/* hero */
+.hero{background:linear-gradient(135deg,#7c5cff 0%,#b14cff 50%,#ff4f8b 100%);color:#fff;border-radius:30px;padding:24px 22px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(124,92,255,.35)}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.13)}
+.hero:before{width:220px;height:220px;left:-60px;top:-80px}
+.hero:after{width:140px;height:140px;left:120px;bottom:-70px}
+.hero h1{font-size:32px}
+.hero .sub{opacity:.92;margin-top:4px}
+.lvl{display:flex;align-items:center;gap:12px;margin-top:16px;position:relative;z-index:1}
+.lvl .badge{background:#fff;color:#7c5cff;font-weight:800;border-radius:16px;padding:6px 12px;font-size:15px;white-space:nowrap}
+.xpbar{flex:1;height:14px;background:rgba(255,255,255,.3);border-radius:99px;overflow:hidden}
+.xpbar i{display:block;height:100%;background:linear-gradient(90deg,#ffe066,#fff);border-radius:99px;transition:width .8s}
+.stats{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;position:relative;z-index:1}
+.stat{background:rgba(255,255,255,.18);border-radius:16px;padding:8px 14px;font-weight:600;font-size:15px}
+.mascot{position:absolute;left:18px;top:14px;font-size:54px;z-index:1;animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-6deg)}}
+/* topics */
+.topics{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+.tcard{background:#fff;border-radius:22px;padding:14px 16px;box-shadow:0 6px 18px rgba(43,35,80,.07);border-bottom:5px solid var(--c)}
+.tcard .top{display:flex;justify-content:space-between;align-items:center}
+.tcard .nm{font-weight:800;font-size:18px}
+.tcard .em{font-size:26px}
+.bar{height:10px;background:#f0edf9;border-radius:99px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;background:var(--c);border-radius:99px;transition:width .8s}
+.tcard .meta{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-top:6px}
+.stars{letter-spacing:2px;font-size:15px}
+.cta{display:flex;justify-content:center;margin:22px 0 8px}
+.btn{background:linear-gradient(135deg,#7c5cff,#ff4f8b);color:#fff;font:700 21px Rubik;padding:16px 34px;border-radius:999px;box-shadow:0 10px 24px rgba(255,79,139,.35);transition:transform .15s,box-shadow .15s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 28px rgba(255,79,139,.42)}
+.btn:active{transform:scale(.97)}
+.btn.sec{background:#fff;color:#7c5cff;box-shadow:0 6px 16px rgba(43,35,80,.1)}
+.btn.sm{font-size:16px;padding:11px 20px}
+.badges{background:#fff;border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(43,35,80,.07);margin-top:16px}
+.blist{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.bdg{display:flex;align-items:center;gap:8px;background:#f6f3ff;border-radius:14px;padding:8px 12px;font-weight:600;font-size:14px}
+.bdg.off{opacity:.38;filter:grayscale(1)}
+.bdg span{font-size:22px}
+.foot{display:flex;justify-content:space-between;align-items:center;margin-top:22px;font-size:14px;color:var(--muted)}
+.link{background:none;color:#7c5cff;font-weight:700;font-size:15px;padding:6px}
+/* exercise page */
+.phead{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 6px 18px rgba(43,35,80,.07);position:sticky;top:8px;z-index:5}
+.phead h2{font-size:22px}
+.dots{display:flex;gap:6px}
+.dots i{width:12px;height:12px;border-radius:50%;background:#e6e1f6;transition:background .3s}
+.dots i.on{background:linear-gradient(135deg,#7c5cff,#ff4f8b)}
+.card{background:#fff;border-radius:24px;padding:18px 18px 20px;box-shadow:0 8px 22px rgba(43,35,80,.08);margin:16px 0;border-top:7px solid var(--c);animation:pop .4s both}
+@keyframes pop{from{opacity:0;transform:translateY(14px)}}
+.chead{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.num{width:34px;height:34px;border-radius:50%;background:var(--c);color:#fff;display:grid;place-items:center;font-weight:800}
+.chip{display:inline-flex;gap:6px;align-items:center;background:color-mix(in srgb,var(--c) 13%,#fff);color:var(--c);padding:3px 12px;border-radius:999px;font-weight:700;font-size:14px}
+.q{font-size:18px}
+.q b{font-weight:700}
+.hint{color:var(--muted);font-size:15px}
+.fig{display:flex;justify-content:center;margin:10px 0 4px}
+.fig svg{max-width:100%;height:auto}
+.fields{display:flex;flex-wrap:wrap;gap:18px;margin-top:14px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:14px;color:var(--muted);font-weight:600}
+.inp{font:700 22px Rubik;width:128px;padding:10px 12px;border:2.5px solid var(--line);border-radius:16px;text-align:center;direction:ltr;background:#fbfaff;color:var(--ink);transition:border-color .2s,box-shadow .2s}
+.inp:focus{outline:none;border-color:var(--c);box-shadow:0 0 0 4px color-mix(in srgb,var(--c) 18%,transparent)}
+.ratio{display:flex;direction:ltr;gap:8px;align-items:flex-start}
+.ratio .colon{font-size:32px;font-weight:800;padding-top:4px;color:var(--c)}
+.ratio .part{display:flex;flex-direction:column;align-items:center;gap:4px}
+.ratio .part small{font-size:13px;color:var(--muted);font-weight:600;direction:rtl}
+.ratio .inp{width:96px}
+/* results */
+.rhero{background:#fff;border-radius:28px;padding:24px;text-align:center;box-shadow:0 10px 26px rgba(43,35,80,.1)}
+.score{font-family:'Secular One';font-size:58px;line-height:1;background:linear-gradient(135deg,#7c5cff,#ff4f8b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rhero .msg{font-size:20px;font-weight:700;margin-top:8px}
+.xpgain{display:inline-block;margin-top:10px;background:#fff6d6;color:#a16207;border-radius:99px;padding:5px 14px;font-weight:800}
+.sumrow{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;text-align:right}
+.sumbox{border-radius:18px;padding:12px 14px}
+.sumbox.good{background:#e9fbef}
+.sumbox.work{background:#fff1f3}
+.sumbox h3{font-size:17px;margin-bottom:6px}
+.sumbox ul{margin:0;padding-right:18px;font-size:15px}
+.rcard{background:#fff;border-radius:22px;padding:16px 18px;margin:14px 0;box-shadow:0 6px 18px rgba(43,35,80,.07);border-right:8px solid var(--s)}
+.rcard.ok{--s:var(--ok)}.rcard.wrong,.rcard.blank{--s:var(--bad)}.rcard.partial{--s:var(--part)}
+.rtop{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ricon{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;background:var(--s);font-size:18px}
+.rsk{font-weight:700}
+.rq{margin:10px 0;font-size:16px;color:#3d3566}
+.rq .fig svg{max-width:300px}
+.ansrow{display:flex;gap:10px;flex-wrap:wrap}
+.ans{background:#f6f4fc;border-radius:14px;padding:8px 12px;font-size:15px}
+.ans b{font-size:17px}
+.ans.mine.bad{background:#fff0f2}
+.ans.right{background:#ecfbf1}
+.errbox{margin-top:10px;background:#fff7e8;border:2px dashed #f5c26b;border-radius:16px;padding:10px 14px}
+.errbox .lab{font-weight:800;color:#b45309}
+.errbox p{margin:4px 0 0;font-size:15px}
+details{margin-top:10px}
+summary{cursor:pointer;font-weight:700;color:#7c5cff;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary:before{content:"▸ ";}
+details[open] summary:before{content:"▾ "}
+.sol{margin:8px 0 0;padding-right:22px;font-size:16px}
+.sol li{margin:4px 0}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+/* parent */
+.pgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.tile{background:#fff;border-radius:18px;padding:12px;text-align:center;box-shadow:0 6px 16px rgba(43,35,80,.07)}
+.tile b{display:block;font-size:26px;font-family:'Secular One'}
+.tile span{font-size:13px;color:var(--muted)}
+.panel{background:#fff;border-radius:22px;padding:16px 18px;box-shadow:0 6px 18px rgba(43,35,80,.07);margin:14px 0}
+.panel h3{font-size:20px;margin-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:15px}
+td,th{padding:7px 6px;border-bottom:1px solid #f0edf7;text-align:right;vertical-align:middle}
+th{color:var(--muted);font-weight:600;font-size:13px}
+.minibar{height:9px;background:#f0edf9;border-radius:99px;overflow:hidden;min-width:70px}
+.minibar i{display:block;height:100%;border-radius:99px}
+.errlist li{margin:6px 0}
+.cnt{display:inline-block;min-width:28px;text-align:center;background:#ffe4e9;color:var(--bad);border-radius:99px;font-weight:800;font-size:13px;padding:1px 8px;margin-left:6px}
+.exam td:first-child{font-weight:600}
+.danger{background:#fff0f2;color:var(--bad)}
+/* modal & confetti */
+.ov{position:fixed;inset:0;background:rgba(30,20,60,.45);display:grid;place-items:center;z-index:50;padding:16px;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.mod{background:#fff;border-radius:24px;padding:22px;max-width:380px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.mod p{font-size:18px;margin:0 0 16px}
+.mod .actions{margin-top:0}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#2b2350;color:#fff;padding:10px 18px;border-radius:99px;font-weight:600;z-index:70;animation:fade .3s}
+@media (max-width:560px){
+ .topics{grid-template-columns:1fr 1fr;gap:9px}
+ .tcard{padding:12px}
+ .pgrid{grid-template-columns:repeat(2,1fr)}
+ .sumrow{grid-template-columns:1fr}
+ .hero h1{font-size:26px}
+ .mascot{font-size:40px}
+ .inp{width:112px}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<script>
+/* ===================== utilities ===================== */
+const R=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a};
+const near=(a,b,t=0.06)=>Math.abs(a-b)<=t;
+const fmt=n=>{if(n==null||!isFinite(n))return '?';return String(Math.round(n*100)/100)};
+const M=s=>`<span class="m">${s}</span>`;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sg=b=>b>=0?`+ ${b}`:`− ${-b}`;
+const expr=(a,b)=>`${a}x ${sg(b)}`;
+function parseNum(raw){let s=String(raw||'').trim().replace(/[₪°%\s]/g,'').replace(',','.').replace('−','-');if(s==='')return null;const n=Number(s);return isNaN(n)?NaN:n}
+
+/* ===================== error catalogue ===================== */
+const ERR={
+ blank:{l:'לא נענה',t:'כדאי לנסות תמיד – גם ניסיון חלקי עוזר ללמוד.'},
+ arithmetic:{l:'טעות חישוב',t:'יכול להיות שהדרך נכונה – כדאי לבדוק כל שלב בחישוב.'},
+ not_reduced:{l:'היחס לא מצומצם',t:'מחלקים את שני המספרים באותו מספר, הגדול ביותר שאפשר, עד שאין להם מחלק משותף.'},
+ reversed:{l:'סדר הפוך ביחס',t:'הסדר ביחס הוא לפי סדר המילים בשאלה: מה שמוזכר ראשון נכתב ראשון.'},
+ whole_missing_part:{l:'השלם לא כולל את החלק עצמו',t:'"כל הפריטים" כולל גם את הפריט שעליו שואלים. מחברים את כולם.'},
+ ratio_copied:{l:'מספר מהיחס במקום כמות',t:'השאלה "כמה?" מחכה למספר אחד. מוצאים פי כמה גדלה הקבוצה, וכופלים גם את החלק השני באותו מספר.'},
+ ratio_for_count:{l:'כתבת יחס במקום מספר',t:'השאלה מבקשת כמות, כלומר מספר אחד ולא יחס.'},
+ scale_add:{l:'חיברת במקום לכפול',t:'ביחס הכמויות גדלות "פי" משהו (כפל), ולא "עוד" משהו (חיבור).'},
+ scale_wrong_factor:{l:'כפלת במספר הלא נכון',t:'קודם מוצאים את המקדם: הכמות הנתונה ÷ החלק שלה ביחס. אחר כך כופלים במקדם את החלק השני.'},
+ ratio_inverted:{l:'הפכת את היחס',t:'בדקי איזה מספר ביחס שייך לאיזו קבוצה.'},
+ divided_one_part:{l:'חילקת בחלק אחד במקום בסכום החלקים',t:'יחס 4:5 אומר שיש 4+5=9 חלקים שווים. מחלקים את סך הכול בסכום החלקים.'},
+ half_way:{l:'עצרת באמצע',t:'מצאת כמה יש בחלק אחד. עכשיו כופלים אותו במספר החלקים של הקבוצה.'},
+ groups_swapped:{l:'החלפת בין הקבוצות',t:'המספר הראשון ביחס שייך לקבוצה שמוזכרת ראשונה.'},
+ sum_check:{l:'הסכום לא מתאים לסך הכול',t:'בדיקה מהירה: שתי הקבוצות יחד חייבות לתת את המספר הכולל.'},
+ pct_added:{l:'הוספת את האחוז במקום לחלק',t:'אם X הם p% מהשלם, אז השלם = X ÷ (p/100). למשל: 21 ÷ 0.7 = 30.'},
+ pct_of_part:{l:'חישבת אחוז מהחלק',t:'כאן החלק כבר נתון ומחפשים את השלם, ולכן מחלקים ולא כופלים. השלם תמיד גדול מהחלק.'},
+ pct_unit:{l:'בלבול בין אחוז למספר',t:'p% פירושו p/100. למשל 70% = 0.7. ההנחה בשקלים היא לא האחוז עצמו.'},
+ pct_complement:{l:'השתמשת באחוז הלא נכון',t:'בדקי: המספר הנתון מייצג את האחוז שבשאלה, או את מה שנשאר?'},
+ pct_wrong_base:{l:'חילקת באחוז ההנחה',t:'אחרי הנחה של p% משלמים (100−p)%. לכן: המחיר ששולם ÷ (100−p)/100 = המחיר המקורי.'},
+ pct_mixed_final:{l:'בלבול בין ההנחה למחיר הסופי',t:'גובה ההנחה הוא כמה חוסכים. המחיר הסופי הוא המחיר המקורי פחות ההנחה.'},
+ pct_wrong_dir:{l:'הוספת במקום להוריד',t:'בהנחה המחיר יורד, ולכן מחסרים את ההנחה.'},
+ pct_summed:{l:'חיברת את האחוזים',t:'ההנחה השנייה מחושבת על המחיר שאחרי ההנחה הראשונה, ולכן אי אפשר פשוט לחבר את האחוזים.'},
+ pct_one_step:{l:'חישבת רק הנחה אחת',t:'יש שתי הנחות. אחרי הראשונה מחשבים את השנייה על המחיר החדש.'},
+ sq_doubled:{l:'חזקה חושבה ככפל ב-2',t:'7² = 7×7 = 49, ולא 7×2 = 14. החזקה אומרת לכפול את המספר בעצמו.'},
+ sq_sum:{l:'ריבעת את הסכום',t:'מרבעים כל מספר לחוד ורק אז מחברים: 3² + 4² = 9 + 16 = 25, ולא (3+4)².'},
+ no_square:{l:'חיברת צלעות בלי ריבוע',t:'בפיתגורס מחברים את הריבועים: a² + b² = c².'},
+ no_root:{l:'שכחת להוציא שורש',t:'החישוב נותן את c² – בסוף צריך להוציא שורש כדי לקבל את אורך הצלע.'},
+ hyp_add:{l:'חיברת במקום לחסר',t:'כשמחפשים ניצב: ניצב² = יתר² − ניצב². היתר הוא הצלע הארוכה, מול הזווית הישרה.'},
+ hyp_sub:{l:'חיסרת במקום לחבר',t:'כשמחפשים את היתר (מול הזווית הישרה) מחברים: c² = a² + b².'},
+ eq_wrong_rel:{l:'קשר לא נכון בין הזוויות',t:'זוויות מתאימות, מתחלפות וקודקודיות שוות. זוויות צמודות וחד-צדדיות משלימות ל-180°.'},
+ eq_sign:{l:'טעות סימן בהעברת אגפים',t:'כשמעבירים מספר לצד השני של המשוואה, הסימן שלו מתהפך.'},
+ equation_solve:{l:'טעות בפתרון המשוואה',t:'בדיקה: מציבים את ה-x שמצאת בשני הביטויים ובודקים שהקשר מתקיים.'},
+ subst_sign:{l:'טעות סימן בהצבה',t:'אם כתוב 4x − 18, אחרי ההצבה מחסרים 18 ולא מוסיפים.'},
+ subst_const:{l:'שכחת את המספר בהצבה',t:'מציבים את x בכל הביטוי. גם המספר שאחרי ה-x הוא חלק מגודל הזווית.'},
+ angle_supp:{l:'חישבת את הזווית השנייה',t:'שימי לב לאיזו זווית שואלים. הזווית השנייה היא 180° פחות הזווית הזאת.'}
+};
+
+/* ===================== checkers ===================== */
+function checkNum(raw,correct,traps=[],colonErr='ratio_for_count'){
+ const s=String(raw||'').trim();
+ if(!s)return{st:'blank',e:'blank'};
+ if(s.includes(':'))return{st:'wrong',e:colonErr};
+ const v=parseNum(s);
+ if(isNaN(v))return{st:'wrong',e:'arithmetic'};
+ if(near(v,correct))return{st:'ok'};
+ for(const [val,e] of traps){if(val==null||!isFinite(val)||near(val,correct))continue;if(near(v,val))return{st:'wrong',e}}
+ return{st:'wrong',e:'arithmetic'};
+}
+function checkRatio(ra,rb,p,q,traps=[]){
+ if(!String(ra||'').trim()&&!String(rb||'').trim())return{st:'blank',e:'blank'};
+ const a=parseNum(ra),b=parseNum(rb);
+ if(a==null||b==null||isNaN(a)||isNaN(b)||a<=0||b<=0)return{st:'wrong',e:'arithmetic'};
+ const g=gcd(p,q),P=p/g,Q=q/g;
+ if(Math.abs(a*Q-b*P)<1e-9){if(a===P&&b===Q)return{st:'ok'};return{st:'partial',e:'not_reduced'}}
+ if(Math.abs(a*P-b*Q)<1e-9&&P!==Q)return{st:'wrong',e:'reversed'};
+ for(const [tp,tq,e] of traps){if(Math.abs(a*tq-b*tp)<1e-9||Math.abs(a*tp-b*tq)<1e-9)return{st:'wrong',e}}
+ return{st:'wrong',e:'arithmetic'};
+}
+function combine(rs){
+ if(rs.every(r=>r.st==='blank'))return{st:'blank',e:'blank'};
+ if(rs.every(r=>r.st==='ok'))return{st:'ok'};
+ const bad=rs.find(r=>r.st==='wrong')||rs.find(r=>r.st!=='ok');
+ if(rs.some(r=>r.st==='ok'))return{st:'partial',e:bad.e};
+ return{st:'wrong',e:bad.e};
+}
+
+/* ===================== content ===================== */
+const PEOPLE=[{n:'נועה',f:1},{n:'דני',f:0},{n:'יעל',f:1},{n:'עומר',f:0},{n:'מאיה',f:1},{n:'איתי',f:0},{n:'תמר',f:1},{n:'אורי',f:0},{n:'הילה',f:1},{n:'רוני',f:0}];
+const G=(p,m,f)=>p.f?f:m;
+const SETS=[
+ {items:['עפרונות','עטים','טושים'],group:'כלי הכתיבה',v:['קנה','קנתה']},
+ {items:['תפוחים','אגסים','תפוזים'],group:'הפירות',v:['קנה','קנתה']},
+ {items:['מדבקות','גלויות','סיכות'],group:'הפריטים',v:['אסף','אספה']},
+ {items:['חולצות','מכנסיים','סוודרים'],group:'הבגדים',v:['קנה','קנתה']},
+ {items:['ספרים','חוברות','מחברות'],group:'הפריטים',v:['סידר במדף','סידרה במדף']}
+];
+const ANIMALS=[['זברות','ג׳ירפות'],['אריות','נמרים'],['דולפינים','כרישים'],['קופים','תוכים'],['ברווזים','אווזים'],['פינגווינים','צבים'],['ינשופים','נשרים']];
+const GROUPS=[
+ {place:'בחוג התיאטרון',who:'חניכים',g1:'בנות',g2:'בנים'},
+ {place:'במקהלת בית הספר',who:'זמרים',g1:'בנות',g2:'בנים'},
+ {place:'בסל',who:'פירות',g1:'תפוחים',g2:'תפוזים'},
+ {place:'בחניון',who:'כלי רכב',g1:'מכוניות',g2:'אופנועים'},
+ {place:'בכיתה',who:'תלמידים',g1:'בנות',g2:'בנים'},
+ {place:'בשקית',who:'סוכריות',g1:'אדומות',g2:'ירוקות'}
+];
+const ITEMS=['משקפי שמש','אוזניות','תיק גב','נעלי ספורט','שעון חכם','מעיל','כדור כדורסל','רמקול'];
+const STORES=['טרנד','סטייל','ספורט-פלוס','מגה-שופ'];
+const coprimePair=(max,allowOne=true)=>{let a,b;do{a=R(1,max);b=R(1,max)}while(a===b||gcd(a,b)!==1||(!allowOne&&(a===1||b===1)));return[a,b]};
+
+/* ---- ratio ---- */
+function genR1(){
+ const set=pick(SETS),p=pick(PEOPLE);let c,g;
+ do{g=pick([2,3,4,5,6]);c=[g*R(1,6),g*R(1,6),g*R(1,6)]}while(new Set(c).size<3||c.some(x=>x<4));
+ let i,j;do{i=R(0,2);j=R(0,2)}while(i===j);
+ const gg=gcd(c[i],c[j]),P=c[i]/gg,Q=c[j]/gg;
+ return{
+  q:`${p.n} ${G(p,set.v[0],set.v[1])} ${c[0]} ${set.items[0]}, ${c[1]} ${set.items[1]} ו-${c[2]} ${set.items[2]}.<br><b>מהו היחס בין מספר ה${set.items[i]} למספר ה${set.items[j]}?</b> <span class="hint">(צמצמי ככל האפשר)</span>`,
+  fields:[{k:'r',kind:'ratio',names:[set.items[i],set.items[j]]}],
+  check:v=>checkRatio(v.r_a,v.r_b,c[i],c[j]),
+  ans:M(`${P} : ${Q}`),
+  sol:[`${set.items[i]} : ${set.items[j]} = ${M(c[i]+' : '+c[j])}`,`המחלק המשותף הגדול ביותר של ${c[i]} ו-${c[j]} הוא ${gg}`,`מחלקים את שני המספרים ב-${gg}: ${M(P+' : '+Q)}`,`שימי לב לסדר: ה${set.items[i]} הוזכרו ראשונים, ולכן הם ראשונים ביחס.`]
+ };
+}
+function genR2(){
+ const set=pick(SETS),p=pick(PEOPLE);let c,T,i;
+ do{c=[R(2,12),R(2,12),R(2,12)].map(x=>x*pick([1,2]));T=c[0]+c[1]+c[2];i=R(0,2)}while(new Set(c).size<3||gcd(c[i],T)===1&&Math.random()<.7);
+ const gg=gcd(c[i],T);
+ return{
+  q:`${p.n} ${G(p,set.v[0],set.v[1])} ${c[0]} ${set.items[0]}, ${c[1]} ${set.items[1]} ו-${c[2]} ${set.items[2]}.<br><b>מהו היחס בין מספר ה${set.items[i]} לבין מספר כל ${set.group}?</b> <span class="hint">(צמצמי ככל האפשר)</span>`,
+  fields:[{k:'r',kind:'ratio',names:[set.items[i],'כל '+set.group]}],
+  check:v=>checkRatio(v.r_a,v.r_b,c[i],T,[[c[i],T-c[i],'whole_missing_part']]),
+  ans:M(`${c[i]/gg} : ${T/gg}`),
+  sol:[`מספר כל ${set.group}: ${M(c[0]+' + '+c[1]+' + '+c[2]+' = '+T)} (כולל ה${set.items[i]}!)`,`היחס: ${M(c[i]+' : '+T)}`,gg>1?`מצמצמים ב-${gg}: ${M(c[i]/gg+' : '+T/gg)}`:`אין מחלק משותף, ולכן היחס כבר מצומצם.`]
+ };
+}
+function genR3(){
+ const [A,B]=pick(ANIMALS);const [a,b]=coprimePair(6);const k=R(2,8);const dir=R(0,1);
+ const Gv=dir?b*k:a*k, ans=dir?a*k:b*k, given=dir?B:A, asked=dir?A:B, gp=dir?b:a, ap=dir?a:b;
+ const traps=[[ap,'ratio_copied'],[Gv,'ratio_copied'],[Gv+(ap-gp),'scale_add'],[Gv*ap,'scale_wrong_factor'],[Gv*gp/ap,'ratio_inverted'],[k,'half_way']];
+ return{
+  q:`בגן החיות, היחס בין מספר ה${A} למספר ה${B} הוא ${M(a+' : '+b)}.<br><b>אם יש בגן ${Gv} ${given}, כמה ${asked} יש?</b>`,
+  fields:[{k:'x',kind:'num',label:`מספר ה${asked}`}],
+  check:v=>checkNum(v.x,ans,traps,'ratio_copied'),
+  ans:`${ans} ${asked}`,
+  sol:[`ביחס ${M(a+' : '+b)}, ה${given} הם ${gp} ${gp===1?'חלק':'חלקים'} וה${asked} ${ap} ${ap===1?'חלק':'חלקים'}.`,`המקדם (כמה בכל חלק): ${M(Gv+' ÷ '+gp+' = '+k)}`,`ה${asked}: ${M(ap+' × '+k+' = '+ans)}`,`בדיקה: ${M(Gv+' : '+ans)} מצטמצם ל-${M(gp+' : '+ap)} ✓`]
+ };
+}
+function genR4(){
+ const c=pick(GROUPS);let a,b;do{[a,b]=coprimePair(7)}while(a+b<3);const k=R(3,9),N=(a+b)*k;
+ return{
+  q:`${c.place} יש ${N} ${c.who}. היחס בין מספר ה${c.g1} למספר ה${c.g2} הוא ${M(a+' : '+b)}.<br><b>כמה ${c.g1} וכמה ${c.g2} יש?</b>`,
+  fields:[{k:'x',kind:'num',label:c.g1},{k:'y',kind:'num',label:c.g2}],
+  check:v=>{
+   const sx=String(v.x||'').trim(),sy=String(v.y||'').trim();
+   if(!sx&&!sy)return{st:'blank',e:'blank'};
+   const x=parseNum(sx),y=parseNum(sy);
+   const okx=x!=null&&near(x,a*k),oky=y!=null&&near(y,b*k);
+   if(okx&&oky)return{st:'ok'};
+   if(x!=null&&y!=null&&near(x,b*k)&&near(y,a*k))return{st:'wrong',e:'groups_swapped'};
+   const one=[N/a,N/b,N*b/a,N*a/b];
+   if([x,y].some(t=>t!=null&&!isNaN(t)&&one.some(o=>near(t,o)&&!near(o,a*k)&&!near(o,b*k))))return{st:okx||oky?'partial':'wrong',e:'divided_one_part'};
+   if([x,y].some(t=>t!=null&&near(t,k)&&!near(k,a*k)&&!near(k,b*k)))return{st:okx||oky?'partial':'wrong',e:'half_way'};
+   if(x!=null&&y!=null&&!isNaN(x)&&!isNaN(y)&&!near(x+y,N))return{st:okx||oky?'partial':'wrong',e:'sum_check'};
+   return{st:okx||oky?'partial':'wrong',e:(!sx||!sy)?'blank':'arithmetic'};
+  },
+  ans:`${a*k} ${c.g1}, ${b*k} ${c.g2}`,
+  sol:[`מספר החלקים: ${M(a+' + '+b+' = '+(a+b))}`,`גודל חלק אחד: ${M(N+' ÷ '+(a+b)+' = '+k)}`,`${c.g1}: ${M(a+' × '+k+' = '+a*k)} &nbsp;|&nbsp; ${c.g2}: ${M(b+' × '+k+' = '+b*k)}`,`בדיקה: ${M(a*k+' + '+b*k+' = '+N)} ✓`]
+ };
+}
+/* ---- percent ---- */
+function genP1(){
+ const item=pick(ITEMS),price=20*R(5,50),p=pick([10,15,20,25,30,35,40,45]),amt=price*p/100,fin=price-amt;
+ return{
+  q:`המחיר המקורי של ${item} הוא ${price} ₪. בחנות יש מבצע של ${p}% הנחה.<br><b>א) מהו גובה ההנחה בשקלים? &nbsp; ב) כמה משלמים אחרי ההנחה?</b>`,
+  fields:[{k:'x',kind:'num',label:'א) גובה ההנחה (₪)'},{k:'y',kind:'num',label:'ב) מחיר אחרי הנחה (₪)'}],
+  check:v=>combine([checkNum(v.x,amt,[[fin,'pct_mixed_final'],[p,'pct_unit'],[price*p,'pct_unit']]),checkNum(v.y,fin,[[amt,'pct_mixed_final'],[price+amt,'pct_wrong_dir'],[price-p,'pct_unit']])]),
+  ans:`הנחה: ${amt} ₪ · מחיר: ${fin} ₪`,
+  sol:[`${p}% = ${M(p/100)}`,`גובה ההנחה: ${M(price+' × '+p/100+' = '+amt)} ₪`,`מחיר אחרי הנחה: ${M(price+' − '+amt+' = '+fin)} ₪`]
+ };
+}
+function genP2(){
+ const p=pick(PEOPLE),W=20*R(2,10),pc=pick([20,25,30,40,45,60,65,70,75,80,90]),X=W*pc/100;
+ const ctx=pick([
+  ()=>`במשחק כדורסל ${p.n} ${G(p,'קלע','קלעה')} ${X} פעמים לסל, שהם ${pc}% מכל ניסיונות הקליעה ${G(p,'שלו','שלה')}.<br><b>כמה פעמים ${G(p,'ניסה','ניסתה')} ${p.n} לקלוע?</b>`,
+  ()=>`${p.n} ${G(p,'קרא','קראה')} ${X} עמודים, שהם ${pc}% מהספר.<br><b>כמה עמודים יש בספר?</b>`,
+  ()=>`${p.n} ${G(p,'חסך','חסכה')} ${X} ₪, שהם ${pc}% ממחיר האופניים ${G(p,'שהוא','שהיא')} רוצה.<br><b>כמה עולים האופניים?</b>`,
+  ()=>`${X} תלמידים נרשמו לטיול השנתי, והם ${pc}% מכל תלמידי השכבה.<br><b>כמה תלמידים יש בשכבה?</b>`
+ ]);
+ return{
+  q:ctx(),
+  fields:[{k:'x',kind:'num',label:'השלם'}],
+  check:v=>checkNum(v.x,W,[[X*(1+pc/100),'pct_added'],[X+pc,'pct_added'],[X*pc/100,'pct_of_part'],[X*(100-pc)/100,'pct_of_part'],[X/pc,'pct_unit'],[X*100/(100-pc),'pct_complement']]),
+  ans:String(W),
+  sol:[`${X} הם ${pc}% מהשלם, כלומר: ${M('? × '+pc/100+' = '+X)}`,`כדי למצוא את השלם מחלקים: ${M(X+' ÷ '+pc/100+' = '+W)}`,`בדיקה: ${pc}% מ-${W} הם ${M(W+' × '+pc/100+' = '+X)} ✓ (השלם גדול מהחלק)`]
+ };
+}
+function genP3(){
+ const p=pick(PEOPLE),item=pick(ITEMS),st=pick(STORES);let price,p1,p2,mid,fin;
+ do{price=100*R(2,12);p1=pick([10,20,25,30,40]);p2=pick([10,20,25,50]);mid=price*(100-p1)/100;fin=mid*(100-p2)/100}while(!Number.isInteger(mid)||!Number.isInteger(fin));
+ return{
+  q:`ברשת "${st}" יש מבצע של ${p1}% הנחה על כל פריט. חברי המועדון מקבלים עוד ${p2}% הנחה על המחיר שאחרי ההנחה הראשונה.<br>${p.n}, ${G(p,'חבר','חברת')} מועדון, ${G(p,'קנה','קנתה')} ${item} שמחירו המקורי ${price} ₪.<br><b>כמה ${G(p,'שילם','שילמה')} אחרי ההנחות?</b>`,
+  fields:[{k:'x',kind:'num',label:'מחיר סופי (₪)'}],
+  check:v=>checkNum(v.x,fin,[[price*(100-p1-p2)/100,'pct_summed'],[mid,'pct_one_step'],[price*(100-p2)/100,'pct_one_step'],[price-fin,'pct_mixed_final']]),
+  ans:`${fin} ₪`,
+  sol:[`אחרי ההנחה הראשונה: ${M(price+' × '+(100-p1)/100+' = '+mid)} ₪`,`אחרי ההנחה השנייה: ${M(mid+' × '+(100-p2)/100+' = '+fin)} ₪`,`שימי לב: זו לא הנחה של ${p1+p2}%!`]
+ };
+}
+function genP4(){
+ const p=pick(PEOPLE),item=pick(ITEMS),orig=20*R(5,40),pc=pick([10,20,25,30,40,50]),paid=orig*(100-pc)/100;
+ return{
+  q:`${p.n} ${G(p,'קנה','קנתה')} ${item} בהנחה של ${pc}% ו${G(p,'שילם','שילמה')} ${paid} ₪.<br><b>מה היה המחיר המקורי?</b>`,
+  fields:[{k:'x',kind:'num',label:'מחיר מקורי (₪)'}],
+  check:v=>checkNum(v.x,orig,[[paid*(1+pc/100),'pct_added'],[paid+pc,'pct_added'],[paid/(pc/100),'pct_wrong_base'],[paid*(100-pc)/100,'pct_of_part'],[paid*pc/100,'pct_of_part']]),
+  ans:`${orig} ₪`,
+  sol:[`אחרי הנחה של ${pc}% משלמים ${100-pc}% מהמחיר המקורי.`,`כלומר: ${M('מחיר מקורי × '+(100-pc)/100+' = '+paid)}`,`מחיר מקורי = ${M(paid+' ÷ '+(100-pc)/100+' = '+orig)} ₪`,`למה לא להוסיף ${pc}% ל-${paid}? כי ה-${pc}% חושבו מהמחיר המקורי, לא מ-${paid}.`]
+ };
+}
+/* ---- pythagoras ---- */
+const TRIPLES=[[3,4,5],[6,8,10],[5,12,13],[8,15,17],[7,24,25],[9,12,15],[12,16,20],[20,21,29],[9,40,41],[10,24,26],[15,20,25],[12,35,37]];
+function genG0(){
+ let a,b;do{a=R(3,15);b=R(3,15)}while(a===b);
+ const minus=Math.random()<.35;if(minus&&a<b)[a,b]=[b,a];
+ const res=minus?a*a-b*b:a*a+b*b;
+ const traps=minus?[[2*a-2*b,'sq_doubled'],[a*a-2*b,'sq_doubled'],[2*a-b*b,'sq_doubled'],[(a-b)**2,'sq_sum'],[a-b,'no_square']]:[[2*a+2*b,'sq_doubled'],[a*a+2*b,'sq_doubled'],[2*a+b*b,'sq_doubled'],[(a+b)**2,'sq_sum'],[a+b,'no_square']];
+ return{
+  q:`<b>חשבי:</b> &nbsp; ${M(`${a}² ${minus?'−':'+'} ${b}²`)}<br><span class="hint">(זה בדיוק החישוב שעושים בפיתגורס)</span>`,
+  fields:[{k:'x',kind:'num',label:'תוצאה'}],
+  check:v=>checkNum(v.x,res,traps),
+  ans:String(res),
+  sol:[`${M(a+'² = '+a+' × '+a+' = '+a*a)}`,`${M(b+'² = '+b+' × '+b+' = '+b*b)}`,`${M(a*a+(minus?' − ':' + ')+b*b+' = '+res)}`]
+ };
+}
+function triSvg(h,v,labels,flip){
+ const s=Math.min(210/h,140/v);let hp=Math.max(60,h*s),vp=Math.max(55,v*s);
+ const Rx=flip?270:55,Ry=180,Hx=flip?Rx-hp:Rx+hp,Vy=Ry-vp,dir=flip?-1:1;
+ const mx=(Rx+Hx)/2,my=Ry,vx=Rx,vy=(Ry+Vy)/2,hx=(Hx+Rx)/2,hy=(Ry+Vy)/2;
+ const nx=hx-Rx,ny=hy-Ry,nl=Math.hypot(nx,ny);
+ const lab=(x,y,t,isX)=>`<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="middle" font-size="${isX?22:19}" font-weight="700" fill="${isX?'#e11d48':'#2b2350'}" font-family="Rubik" ${isX?'font-style="italic"':''}>${t}</text>`;
+ return `<svg viewBox="0 0 330 215" width="330" height="215" xmlns="http://www.w3.org/2000/svg" direction="ltr">
+ <polygon points="${Rx},${Ry} ${Hx},${Ry} ${Rx},${Vy}" fill="#e6faf6" stroke="#0fa894" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M${Rx+dir*16},${Ry} L${Rx+dir*16},${Ry-16} L${Rx},${Ry-16}" fill="none" stroke="#0fa894" stroke-width="2.2"/>
+ ${lab(mx,Ry+20,labels[0],labels[0]==='x')}${lab(Rx-dir*20,vy,labels[1],labels[1]==='x')}${lab(hx+nx/nl*22,hy+ny/nl*22,labels[2],labels[2]==='x')}
+ </svg>`;
+}
+function genG1(){
+ const t=pick(TRIPLES);let [a,b,c]=t;if(Math.random()<.5)[a,b]=[b,a];
+ return{
+  q:`<b>במשולש ישר-הזווית שבציור, מצאי את x.</b>`,
+  svg:triSvg(a,b,[a,b,'x'],Math.random()<.5),
+  fields:[{k:'x',kind:'num',label:'x ='}],
+  check:v=>checkNum(v.x,c,[[Math.sqrt(a*a+2*b),'sq_doubled'],[Math.sqrt(2*a+b*b),'sq_doubled'],[Math.sqrt(2*a+2*b),'sq_doubled'],[a+b,'no_square'],[a*a+b*b,'no_root'],[Math.sqrt(Math.abs(a*a-b*b)),'hyp_sub'],[Math.sqrt(a+b),'no_square'],[a+b+0,'no_square']]),
+  ans:`x = ${c}`,
+  sol:[`x הוא היתר (מול הזווית הישרה), ולכן: ${M('x² = '+a+'² + '+b+'²')}`,`${M('x² = '+a*a+' + '+b*b+' = '+c*c)}`,`${M('x = √'+c*c+' = '+c)}`]
+ };
+}
+function genG2(){
+ const t=pick(TRIPLES);let [a,b,c]=t;if(Math.random()<.5)[a,b]=[b,a];
+ const unknownH=Math.random()<.5; // which leg is x
+ const h=unknownH?b:a,v=unknownH?a:b; // h horizontal, v vertical
+ const known=a,ans=b;
+ const labels=unknownH?['x',a,c]:[a,'x',c];
+ return{
+  q:`<b>במשולש ישר-הזווית שבציור, מצאי את x.</b>`,
+  svg:triSvg(h,v,labels,Math.random()<.5),
+  fields:[{k:'x',kind:'num',label:'x ='}],
+  check:v2=>checkNum(v2.x,ans,[[Math.sqrt(c*c+known*known),'hyp_add'],[c*c+known*known,'no_root'],[c-known,'no_square'],[c*c-known*known,'no_root'],[Math.sqrt(c*c-2*known),'sq_doubled'],[Math.sqrt(2*c-2*known),'sq_doubled'],[Math.sqrt(Math.abs(2*c-known*known)),'sq_doubled'],[c+known,'no_square']]),
+  ans:`x = ${ans}`,
+  sol:[`${c} הוא היתר (מול הזווית הישרה), ו-x הוא ניצב.`,`${M('x² = '+c+'² − '+known+'²')} = ${M(c*c+' − '+known*known+' = '+ans*ans)}`,`${M('x = √'+ans*ans+' = '+ans)}`]
+ };
+}
+/* ---- angles ---- */
+const T1={x:220,y:60},T2={x:142,y:190};
+const DH=(()=>{const dx=60,dy=-100,l=Math.hypot(dx,dy);return{x:dx/l,y:dy/l}})();
+const RAYS={TR:[{x:1,y:0},DH],TL:[DH,{x:-1,y:0}],BL:[{x:-1,y:0},{x:-DH.x,y:-DH.y}],BR:[{x:-DH.x,y:-DH.y},{x:1,y:0}]};
+const ACUTE={TR:1,BL:1,TL:0,BR:0};
+function angSvg(marks){
+ let s=`<svg viewBox="0 0 360 258" width="360" height="258" xmlns="http://www.w3.org/2000/svg" direction="ltr">`;
+ s+=`<line x1="15" y1="60" x2="345" y2="60" stroke="#2b2350" stroke-width="3"/><line x1="15" y1="190" x2="345" y2="190" stroke="#2b2350" stroke-width="3"/>`;
+ for(const y of [60,190])s+=`<path d="M300,${y-7} L310,${y} L300,${y+7}" fill="none" stroke="#2b2350" stroke-width="2.5"/><path d="M310,${y-7} L320,${y} L310,${y+7}" fill="none" stroke="#2b2350" stroke-width="2.5"/>`;
+ s+=`<line x1="${T2.x-DH.x*72}" y1="${T2.y-DH.y*72}" x2="${T1.x+DH.x*65}" y2="${T1.y+DH.y*65}" stroke="#2b2350" stroke-width="3"/>`;
+ for(const mk of marks){
+  const P=mk.at==='top'?T1:T2,[u1,u2]=RAYS[mk.pos],r=20;
+  s+=`<path d="M${P.x+u1.x*r},${P.y+u1.y*r} A${r},${r} 0 0 0 ${P.x+u2.x*r},${P.y+u2.y*r}" fill="none" stroke="${mk.c}" stroke-width="4" stroke-linecap="round"/>`;
+  const bx=u1.x+u2.x,by=u1.y+u2.y,bl=Math.hypot(bx,by),off=ACUTE[mk.pos]?72:42;
+  const lx=P.x+bx/bl*off,ly=P.y+by/bl*off,w=mk.label.length*9+16;
+  s+=`<rect x="${lx-w/2}" y="${ly-14}" width="${w}" height="28" rx="14" fill="${mk.c}"/><text x="${lx}" y="${ly+1}" text-anchor="middle" dominant-baseline="middle" font-size="16" font-weight="700" fill="#fff" font-family="Rubik">${mk.label}</text>`;
+ }
+ return s+`</svg>`;
+}
+const REL_EQ={
+ corr:{n:'מתאימות',pairs:[['top','TR','bot','TR'],['top','TL','bot','TL'],['top','BL','bot','BL'],['top','BR','bot','BR']]},
+ alt:{n:'מתחלפות',pairs:[['top','BL','bot','TR'],['top','BR','bot','TL']]},
+ vert:{n:'קודקודיות',pairs:[['top','TR','top','BL'],['bot','TL','bot','BR'],['top','TL','top','BR'],['bot','TR','bot','BL']]}
+};
+const REL_SUP={
+ adj:{n:'צמודות',pairs:[['top','TR','top','TL'],['bot','BL','bot','BR'],['top','BR','top','TR'],['bot','TL','bot','BL']]},
+ coint:{n:'חד-צדדיות (פנימיות)',pairs:[['top','BR','bot','TR'],['top','BL','bot','TL']]}
+};
+function mkExprs(x,ang1,ang2){
+ let a,c,b,d,tries=0;
+ do{a=R(2,9);c=R(2,9);b=ang1-a*x;d=ang2-c*x;tries++}while((a===c&&ang1===ang2)||b===0||d===0||Math.abs(b)>150||Math.abs(d)>150||(tries<40&&b>0&&d>0));
+ return{a,b,c,d};
+}
+function angCheck(v,x,ang,a,b,c,d,wrongX){
+ const sx=String(v.x||'').trim(),sa=String(v.g||'').trim();
+ if(!sx&&!sa)return{st:'blank',e:'blank'};
+ const xv=parseNum(sx),av=parseNum(sa);
+ const xOk=xv!=null&&near(xv,x),aOk=av!=null&&near(av,ang);
+ if(xOk&&aOk)return{st:'ok'};
+ if(!xOk){
+  let e='equation_solve';
+  if(xv==null||isNaN(xv))e=sx?'arithmetic':'blank';
+  else{for(const [w,er] of wrongX)if(w!=null&&isFinite(w)&&!near(w,x)&&near(xv,w)){e=er;break}}
+  return{st:aOk?'partial':'wrong',e};
+ }
+ // x correct, angle wrong
+ if(av==null||isNaN(av))return{st:'partial',e:sa?'arithmetic':'blank'};
+ const t=[[a*x-b,'subst_sign'],[c*x-d,'subst_sign'],[a*x,'subst_const'],[c*x,'subst_const'],[180-ang,'angle_supp']];
+ for(const [w,er] of t)if(!near(w,ang)&&near(av,w))return{st:'partial',e:er};
+ return{st:'partial',e:'arithmetic'};
+}
+function solveSteps(a,b,c,d,x){
+ const coef=a>c?a-c:c-a,rhs=a>c?d-b:b-d;
+ return [`${M(expr(a,b)+' = '+expr(c,d))}`,a>c?`${M(a+'x − '+c+'x = '+d+' '+(b>=0?'− '+b:'+ '+(-b)))}`:`${M(c+'x − '+a+'x = '+b+' '+(d>=0?'− '+d:'+ '+(-d)))}`,`${M(coef+'x = '+rhs)} ⟸ ${M('x = '+x)}`];
+}
+function genA1(){
+ const key=pick(Object.keys(REL_EQ)),rel=REL_EQ[key],pr=pick(rel.pairs);
+ const acute=ACUTE[pr[1]];const ang=acute?R(35,80):R(100,145);
+ let x,e;do{x=R(5,30);e=mkExprs(x,ang,ang)}while(e.a===e.c);
+ const {a,b,c,d}=e;const e1=expr(a,b),e2=expr(c,d);
+ const wrongX=[[(180-b-d)/(a+c),'eq_wrong_rel'],[(d+b)/(a-c),'eq_sign'],[(-d-b)/(a-c),'eq_sign'],[(b-d)/(a-c),'eq_sign'],[(d-b)/(a+c),'eq_sign']];
+ return{
+  q:`<b>שני הישרים המסומנים בחצים מקבילים. מצאי את x ואת גודל הזווית שמסומנת ${M(e1)}</b>`,
+  svg:angSvg([{at:pr[0],pos:pr[1],label:e1,c:'#ff8a00'},{at:pr[2],pos:pr[3],label:e2,c:'#7c5cff'}]),
+  fields:[{k:'x',kind:'num',label:'x ='},{k:'g',kind:'num',label:'גודל הזווית (°)'}],
+  check:v=>angCheck(v,x,ang,a,b,c,d,wrongX),
+  ans:`x = ${x}, הזווית ${ang}°`,
+  sol:[`הזוויות ${rel.n}, ולכן הן שוות.`,...solveSteps(a,b,c,d,x),`הצבה: ${M(a+' · '+x+' '+sg(b)+' = '+a*x+' '+sg(b)+' = '+ang+'°')}`,`בדיקה: ${M(c+' · '+x+' '+sg(d)+' = '+ang+'°')} ✓`]
+ };
+}
+function genA2(){
+ const key=pick(Object.keys(REL_SUP)),rel=REL_SUP[key],pr=pick(rel.pairs);
+ const acute=ACUTE[pr[1]];const ang=acute?R(35,80):R(100,145),ang2=180-ang;
+ const x=R(5,25);const {a,b,c,d}=mkExprs(x,ang,ang2);
+ const e1=expr(a,b),e2=expr(c,d);
+ const wrongX=[[a!==c?(d-b)/(a-c):null,'eq_wrong_rel'],[(180+b+d)/(a+c),'eq_sign'],[(180-b+d)/(a+c),'eq_sign'],[(180+b-d)/(a+c),'eq_sign'],[(180-b-d)/(a-c),'eq_sign']];
+ return{
+  q:`<b>שני הישרים המסומנים בחצים מקבילים. מצאי את x ואת גודל הזווית שמסומנת ${M(e1)}</b>`,
+  svg:angSvg([{at:pr[0],pos:pr[1],label:e1,c:'#ff8a00'},{at:pr[2],pos:pr[3],label:e2,c:'#7c5cff'}]),
+  fields:[{k:'x',kind:'num',label:'x ='},{k:'g',kind:'num',label:'גודל הזווית (°)'}],
+  check:v=>angCheck(v,x,ang,a,b,c,d,wrongX),
+  ans:`x = ${x}, הזווית ${ang}°`,
+  sol:[`הזוויות ${rel.n}, ולכן הן משלימות ל-180°.`,`${M(expr(a,b)+' + '+expr(c,d)+' = 180')}`,`${M((a+c)+'x '+sg(b+d)+' = 180')} ⟸ ${M((a+c)+'x = '+(180-b-d))} ⟸ ${M('x = '+x)}`,`הצבה: ${M(a+' · '+x+' '+sg(b)+' = '+ang+'°')}`,`בדיקה: ${M(ang+' + '+ang2+' = 180')} ✓`]
+ };
+}
+
+/* ===================== skills & topics ===================== */
+const TOPICS={ratio:{n:'יחס',e:'⚖️',c:'var(--ratio)',prior:.15},pct:{n:'אחוזים',e:'💸',c:'var(--pct)',prior:.6},pyth:{n:'פיתגורס',e:'📐',c:'var(--pyth)',prior:.5},ang:{n:'זוויות',e:'📏',c:'var(--ang)',prior:.6}};
+const SK={
+ R1:{t:'ratio',n:'צמצום יחס',w:2,prior:.3,g:genR1},
+ R2:{t:'ratio',n:'יחס חלק לשלם',w:2,prior:.1,g:genR2},
+ R3:{t:'ratio',n:'הגדלת יחס ("כמה יהיו?")',w:3,prior:.05,g:genR3},
+ R4:{t:'ratio',n:'חלוקה לפי יחס',w:3,prior:.05,g:genR4},
+ P1:{t:'pct',n:'הנחה ומחיר סופי',w:1,prior:.9,g:genP1},
+ P2:{t:'pct',n:'מציאת השלם מתוך אחוז',w:3,prior:.1,g:genP2},
+ P3:{t:'pct',n:'הנחה כפולה',w:1,prior:.9,g:genP3},
+ P4:{t:'pct',n:'מחיר מקורי לפני הנחה',w:1.6,prior:.3,g:genP4},
+ G0:{t:'pyth',n:'חישוב חזקות',w:1.6,prior:.3,g:genG0},
+ G1:{t:'pyth',n:'מציאת היתר',w:2.2,prior:.2,g:genG1},
+ G2:{t:'pyth',n:'מציאת ניצב',w:1.4,prior:.7,g:genG2},
+ A1:{t:'ang',n:'זוויות שוות',w:2,prior:.5,g:genA1},
+ A2:{t:'ang',n:'זוויות משלימות ל-180°',w:1.5,prior:.5,g:genA2}
+};
+const LEVELS=['מתחילה','מתאמנת','חוקרת','מחשבת','מומחית','אלופה','גאונית','אגדה'];
+const LV_XP=120;
+const BADGES=[
+ {id:'first',e:'🌱',n:'דף ראשון'},
+ {id:'perfect',e:'💯',n:'דף מושלם'},
+ {id:'streak3',e:'🔥',n:'3 ימים ברצף'},
+ {id:'pages10',e:'📚',n:'10 דפים'},
+ {id:'ratio',e:'⚖️',n:'אלופת היחס'},
+ {id:'pct',e:'💸',n:'אלופת האחוזים'},
+ {id:'pyth',e:'📐',n:'אלופת פיתגורס'},
+ {id:'ang',e:'📏',n:'אלופת הזוויות'}
+];
+const val=st=>st==='ok'?1:st==='partial'?.5:0;
+
+/* ===================== state & sync ===================== */
+const KEY='shira-math-v1';
+const blank=()=>({v:1,name:'',xp:0,pages:[],days:[],badges:[],updated:0});
+let S=(()=>{try{const r=localStorage.getItem(KEY);if(r)return Object.assign(blank(),JSON.parse(r))}catch(e){}return blank()})();
+let db=null,dbOk=true,writing=false,pendingWrite=false,syncMsg='';
+function setSync(m){syncMsg=m;const el=document.getElementById('sync');if(el)el.textContent=m}
+function save(){S.updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}pushRemote()}
+async function pushRemote(){
+ if(!db||!dbOk)return;if(writing){pendingWrite=true;return}
+ writing=true;
+ try{await db.doc('progress/main').set(JSON.parse(JSON.stringify(S)));setSync('☁️ ההתקדמות נשמרה')}
+ catch(e){if(e&&e.code==='invalid_argument')dbOk=false;setSync('💾 נשמר במכשיר')}
+ writing=false;if(pendingWrite){pendingWrite=false;pushRemote()}
+}
+async function initDb(){
+ let tries=0;while(!(window.claude&&window.claude.use)&&tries<15){await new Promise(r=>setTimeout(r,200));tries++}
+ if(!(window.claude&&window.claude.use)){setSync('💾 נשמר במכשיר');return}
+ try{db=await window.claude.use('db')}catch(e){db=null}
+ if(!db){setSync('💾 נשמר במכשיר');return}
+ const timer=setTimeout(()=>setSync('💾 נשמר במכשיר'),10000);
+ try{
+  const snap=await db.doc('progress/main').get();clearTimeout(timer);
+  const d=snap.exists?snap.data():null;
+  if(d&&(d.updated||0)>(S.updated||0)){S=Object.assign(blank(),JSON.parse(JSON.stringify(d)));try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}if(view==='home'||view==='parent')render()}
+  else if(S.pages.length&&(!d||(S.updated||0)>(d.updated||0)))pushRemote();
+  setSync('☁️ מסונכרן');
+ }catch(e){clearTimeout(timer);setSync('💾 נשמר במכשיר')}
+}
+
+/* ===================== analytics ===================== */
+function allItems(){const out=[];for(const p of S.pages)for(const it of p.items)out.push({...it,t:p.t});return out}
+function skillHist(sk){return allItems().filter(i=>i.s===sk)}
+function skillAcc(sk){const h=skillHist(sk).slice(-12);const ok=h.reduce((a,i)=>a+val(i.st),0);return(ok+SK[sk].prior*3)/(h.length+3)}
+function skillW(sk){return SK[sk].w*(0.35+1.65*(1-skillAcc(sk)))}
+function topicStats(t,last=15){const h=allItems().filter(i=>SK[i.s]&&SK[i.s].t===t);const l=h.slice(-last);return{n:h.length,acc:l.length?l.reduce((a,i)=>a+val(i.st),0)/l.length:null}}
+function wpick(items,wf){const ws=items.map(wf);let r=Math.random()*ws.reduce((a,b)=>a+b,0);for(let i=0;i<items.length;i++){r-=ws[i];if(r<=0)return items[i]}return items[items.length-1]}
+function buildPage(){
+ const tl=Object.keys(TOPICS);
+ const extra=wpick(tl,t=>Object.keys(SK).filter(k=>SK[k].t===t).reduce((a,k)=>a+skillW(k),0));
+ const used=new Set(),exs=[];
+ for(const t of [...tl,extra]){
+  const cands=Object.keys(SK).filter(k=>SK[k].t===t&&!used.has(k));
+  const sk=wpick(cands,skillW);used.add(sk);
+  const ex=SK[sk].g();ex.skill=sk;ex.topic=t;exs.push(ex);
+ }
+ return shuffle(exs);
+}
+const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+function streak(){
+ const set=new Set(S.days);let n=0;const d=new Date();
+ if(!set.has(todayStr()))d.setDate(d.getDate()-1);
+ while(set.has(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate())){n++;d.setDate(d.getDate()-1)}
+ return n;
+}
+function level(){const l=Math.floor(S.xp/LV_XP);return{i:l,name:LEVELS[Math.min(l,LEVELS.length-1)],pct:(S.xp%LV_XP)/LV_XP*100,toNext:LV_XP-S.xp%LV_XP}}
+function checkBadges(){
+ const got=new Set(S.badges),nw=[];const add=id=>{if(!got.has(id)){got.add(id);nw.push(id)}};
+ if(S.pages.length>=1)add('first');
+ if(S.pages.some(p=>p.score===p.n))add('perfect');
+ if(streak()>=3)add('streak3');
+ if(S.pages.length>=10)add('pages10');
+ for(const t of Object.keys(TOPICS)){const h=allItems().filter(i=>SK[i.s].t===t).slice(-10);if(h.length>=8&&h.reduce((a,i)=>a+val(i.st),0)/h.length>=.8)add(t)}
+ S.badges=[...got];return nw;
+}
+
+/* ===================== UI ===================== */
+const app=document.getElementById('app');
+let view='home',cur=null;
+function render(){({home:renderHome,page:renderPage,results:renderResults,parent:renderParent})[view]();window.scrollTo({top:0,behavior:'instant'})}
+function go(v){view=v;render()}
+
+function renderHome(){
+ const lv=level(),st=streak();
+ const tcards=Object.entries(TOPICS).map(([k,t])=>{
+  const s=topicStats(k);const acc=s.acc==null?t.prior:s.acc;const stars=acc>=.9?3:acc>=.7?2:acc>=.45?1:0;
+  return `<div class="tcard" style="--c:${t.c}"><div class="top"><span class="nm">${t.n}</span><span class="em">${t.e}</span></div>
+  <div class="bar"><i style="width:${Math.round(acc*100)}%"></i></div>
+  <div class="meta"><span>${s.acc==null?'נקודת פתיחה':Math.round(acc*100)+'% הצלחה'}</span><span class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span></div></div>`;
+ }).join('');
+ const bd=BADGES.map(b=>`<div class="bdg ${S.badges.includes(b.id)?'':'off'}"><span>${b.e}</span>${b.n}</div>`).join('');
+ const greet=S.pages.length?pick(['איזה כיף שחזרת!','מוכנה לעוד דף?','כל דף מקרב אותך לרמה הבאה!','המוח שלך מתחמם 🔥']):'בואי נתחיל את המסע!';
+ app.innerHTML=`
+ <div class="hero"><div class="mascot">🦄</div>
+  <h1>היי${S.name?' '+esc(S.name):''}! 👋</h1><div class="sub">${greet}</div>
+  <div class="lvl"><span class="badge">רמה ${lv.i+1} · ${lv.name}</span><div class="xpbar"><i style="width:${lv.pct}%"></i></div></div>
+  <div class="stats"><span class="stat">⭐ ${S.xp} נקודות</span><span class="stat">🔥 ${st} ${st===1?'יום':'ימים'} ברצף</span><span class="stat">📄 ${S.pages.length} דפים</span></div>
+ </div>
+ <div class="topics">${tcards}</div>
+ <div class="cta"><button class="btn" id="start">▶ &nbsp;דף תרגול חדש</button></div>
+ <div class="muted" style="text-align:center;font-size:15px">כל דף כולל 5 תרגילים מכל הנושאים, עם דגש על מה שצריך לחזק. עוד ${lv.toNext} נקודות לרמה הבאה.</div>
+ <div class="badges"><h3>🏅 התגים שלי</h3><div class="blist">${bd}</div></div>
+ <div class="foot"><button class="link" id="nm">✏️ ${S.name?'שינוי שם':'הוספת שם'}</button><button class="link" id="parent">👨‍👩‍👧 מסך הורים</button></div>`;
+ document.getElementById('start').onclick=startPage;
+ document.getElementById('parent').onclick=()=>go('parent');
+ document.getElementById('nm').onclick=askName;
+ if(!S.name&&!S.pages.length&&!askedName){askedName=true;setTimeout(askName,300)}
+}
+let askedName=false;
+function askName(){
+ const o=document.createElement('div');o.className='ov';
+ o.innerHTML=`<div class="mod"><p>איך קוראים לך? 😊</p><input class="inp" id="nmi" style="width:100%;direction:rtl;margin-bottom:16px" maxlength="20" value="${esc(S.name||'')}"><div class="actions"><button class="btn sm" data-y>שמירה</button><button class="btn sec sm" data-n>אחר כך</button></div></div>`;
+ document.body.appendChild(o);const inp=o.querySelector('#nmi');inp.focus();
+ const done=()=>{const v=inp.value.trim();if(v!==S.name){S.name=v;save()}o.remove();render()};
+ o.querySelector('[data-y]').onclick=done;inp.onkeydown=e=>{if(e.key==='Enter')done()};
+ o.querySelector('[data-n]').onclick=()=>o.remove();
+}
+function startPage(){cur={n:S.pages.length+1,exs:buildPage(),vals:[]};go('page')}
+
+function fieldHtml(f,i){
+ if(f.kind==='ratio')return `<div class="field"><label>היחס</label><div class="ratio">
+  <div class="part"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}_a"><small>${f.names[0]}</small></div>
+  <span class="colon">:</span>
+  <div class="part"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}_b"><small>${f.names[1]}</small></div></div></div>`;
+ return `<div class="field"><label>${f.label}</label><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}"></div>`;
+}
+function renderPage(){
+ const cards=cur.exs.map((ex,i)=>{const t=TOPICS[ex.topic];return `<div class="card" style="--c:${t.c};animation-delay:${i*.07}s">
+  <div class="chead"><span class="num">${i+1}</span><span class="chip">${t.e} ${t.n}</span></div>
+  <div class="q">${ex.q}</div>${ex.svg?`<div class="fig">${ex.svg}</div>`:''}
+  <div class="fields">${ex.fields.map(f=>fieldHtml(f,i)).join('')}</div></div>`}).join('');
+ app.innerHTML=`<div class="phead"><h2>דף ${cur.n} ✏️</h2><div class="dots">${cur.exs.map((_,i)=>`<i data-d="${i}"></i>`).join('')}</div><button class="link" id="home">✕ יציאה</button></div>
+ ${cards}<div class="cta"><button class="btn" id="submit">סיימתי – בואי נבדוק! ✨</button></div>`;
+ const inputs=[...app.querySelectorAll('.inp')];
+ const upd=()=>cur.exs.forEach((ex,i)=>{const ins=inputs.filter(x=>+x.dataset.i===i);app.querySelector(`[data-d="${i}"]`).classList.toggle('on',ins.every(x=>x.value.trim()))});
+ inputs.forEach((inp,idx)=>{inp.addEventListener('input',upd);inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const nx=inputs[idx+1];if(nx)nx.focus();else document.getElementById('submit').focus()}})});
+ document.getElementById('home').onclick=async()=>{if(inputs.some(x=>x.value.trim())){if(!(await modal('לצאת? התשובות בדף הזה לא יישמרו.',['לצאת','להישאר'])))return}go('home')};
+ document.getElementById('submit').onclick=async()=>{
+  const empty=cur.exs.filter((_,i)=>inputs.filter(x=>+x.dataset.i===i).some(x=>!x.value.trim())).length;
+  if(empty&&!(await modal(`יש ${empty===1?'תרגיל אחד שלא הושלם':empty+' תרגילים שלא הושלמו'}. לבדוק בכל זאת?`,['לבדוק','לחזור לתרגילים'])))return;
+  cur.vals=cur.exs.map((_,i)=>{const o={};inputs.filter(x=>+x.dataset.i===i).forEach(x=>o[x.dataset.k]=x.value);return o});
+  finishPage();
+ };
+}
+function finishPage(){
+ cur.res=cur.exs.map((ex,i)=>{let r;try{r=ex.check(cur.vals[i])}catch(e){r={st:'wrong',e:'arithmetic'}}return r});
+ const score=cur.res.filter(r=>r.st==='ok').length;
+ let xp=cur.res.reduce((a,r)=>a+(r.st==='ok'?10:r.st==='partial'?4:0),0);
+ if(score===cur.exs.length)xp+=20;else if(score>=cur.exs.length-1)xp+=10;
+ const before=level().i;
+ S.xp+=xp;
+ S.pages.push({t:Date.now(),score,n:cur.exs.length,items:cur.exs.map((ex,i)=>({s:ex.skill,st:cur.res[i].st,e:cur.res[i].e||null}))});
+ if(S.pages.length>200)S.pages=S.pages.slice(-200);
+ if(!S.days.includes(todayStr()))S.days.push(todayStr());
+ if(S.days.length>120)S.days=S.days.slice(-120);
+ cur.xp=xp;cur.score=score;cur.newBadges=checkBadges();cur.levelUp=level().i>before;
+ save();go('results');
+ if(score>=4)setTimeout(confetti,250);
+}
+function userAns(ex,v){
+ return ex.fields.map(f=>{
+  if(f.kind==='ratio'){const a=(v[f.k+'_a']||'').trim(),b=(v[f.k+'_b']||'').trim();return(a||b)?M(esc(a||'?')+' : '+esc(b||'?')):'—'}
+  const s=(v[f.k]||'').trim();return(ex.fields.length>1?f.label.replace(/\s*\(.*\)/,'')+': ':'')+(s?M(esc(s)):'—');
+ }).join(' · ');
+}
+function renderResults(){
+ const n=cur.exs.length,sc=cur.score;
+ const msg=sc===n?pick(['מושלם! את תותחית! 🏆','וואו, הכול נכון! 🌟']):sc>=n-1?pick(['כמעט מושלם! כל הכבוד! 💪','מעולה! עוד צעד קטן לשלמות 🚀']):sc>=Math.ceil(n/2)?pick(['יפה מאוד! ממשיכות להשתפר 🌈','התקדמות יפה – בואי נראה מה ללמוד מהטעויות 🔍']):pick(['כל טעות היא הזדמנות ללמוד משהו 🌱','לא נורא! בדיוק בשביל זה מתרגלים 💜']);
+ const good=[],work=[];
+ cur.exs.forEach((ex,i)=>{const r=cur.res[i];if(r.st==='ok')good.push(SK[ex.skill].n);else work.push(`${SK[ex.skill].n}: ${ERR[r.e]?ERR[r.e].l:'טעות'}`)});
+ const cards=cur.exs.map((ex,i)=>{
+  const r=cur.res[i],t=TOPICS[ex.topic],er=ERR[r.e]||ERR.arithmetic;
+  const icon=r.st==='ok'?'✓':r.st==='partial'?'½':'✗';
+  return `<div class="rcard ${r.st}"><div class="rtop"><span class="ricon">${icon}</span><span class="chip" style="--c:${t.c}">${t.e} ${t.n}</span><span class="rsk">${SK[ex.skill].n}</span></div>
+  <div class="rq">${ex.q}${ex.svg?`<div class="fig">${ex.svg}</div>`:''}</div>
+  <div class="ansrow"><div class="ans mine ${r.st==='ok'?'':'bad'}">התשובה שלך: <b>${userAns(ex,cur.vals[i])}</b></div>${r.st==='ok'?'':`<div class="ans right">התשובה הנכונה: <b>${ex.ans}</b></div>`}</div>
+  ${r.st==='ok'?'':`<div class="errbox"><div class="lab">${r.st==='partial'?'כמעט! ':''}אופי הטעות: ${er.l}</div><p>💡 ${er.t}</p></div>`}
+  <details ${r.st==='ok'?'':'open'}><summary>איך פותרים?</summary><ol class="sol">${ex.sol.map(s=>`<li>${s}</li>`).join('')}</ol></details></div>`;
+ }).join('');
+ const nb=cur.newBadges.map(id=>BADGES.find(b=>b.id===id)).map(b=>`<div class="bdg"><span>${b.e}</span>תג חדש: ${b.n}</div>`).join('');
+ app.innerHTML=`<div class="rhero"><div class="muted">דף ${cur.n} – תוצאות</div><div class="score">${sc}/${n}</div><div class="msg">${msg}</div>
+ <span class="xpgain">+${cur.xp} נקודות ⭐</span>${cur.levelUp?`<div class="xpgain" style="background:#ede9ff;color:#6d28d9;margin-right:6px">עלית לרמה ${level().i+1}: ${level().name}! 🎉</div>`:''}
+ ${nb?`<div class="blist" style="justify-content:center">${nb}</div>`:''}
+ <div class="sumrow"><div class="sumbox good"><h3>✅ במה הצלחת</h3>${good.length?`<ul>${good.map(g=>`<li>${g}</li>`).join('')}</ul>`:'<div class="muted">בדף הבא זה יגיע!</div>'}</div>
+ <div class="sumbox work"><h3>🎯 על מה לעבוד</h3>${work.length?`<ul>${work.map(g=>`<li>${g}</li>`).join('')}</ul>`:'<div class="muted">כלום! הכול נכון 🎉</div>'}</div></div></div>
+ ${cards}
+ <div class="actions"><button class="btn" id="next">לדף הבא ←</button><button class="btn sec" id="home">🏠 למסך הבית</button></div>`;
+ document.getElementById('next').onclick=startPage;
+ document.getElementById('home').onclick=()=>go('home');
+}
+function renderParent(){
+ const items=allItems(),tot=items.length,acc=tot?items.reduce((a,i)=>a+val(i.st),0)/tot:0;
+ const first=S.pages.slice(0,3),last=S.pages.slice(-3);
+ const pAcc=ps=>{const it=ps.flatMap(p=>p.items);return it.length?it.reduce((a,i)=>a+val(i.st),0)/it.length:0};
+ const trend=S.pages.length>=4?Math.round((pAcc(last)-pAcc(first))*100):null;
+ const bar=(p,c)=>`<div class="minibar"><i style="width:${Math.round(p*100)}%;background:${c}"></i></div>`;
+ const topicRows=Object.entries(TOPICS).map(([k,t])=>{const all=topicStats(k,9999),rec=topicStats(k,10);return `<tr><td>${t.e} ${t.n}</td><td>${all.n}</td><td>${all.acc==null?'—':Math.round(all.acc*100)+'%'}</td><td>${rec.acc==null?'—':Math.round(rec.acc*100)+'%'}</td><td style="width:30%">${bar(rec.acc||0,t.c)}</td></tr>`}).join('');
+ const skRows=Object.entries(SK).map(([k,s])=>{const h=skillHist(k);const a=h.length?h.reduce((x,i)=>x+val(i.st),0)/h.length:null;const lastE=[...h].reverse().find(i=>i.st!=='ok');return `<tr><td>${s.n}</td><td>${h.length}</td><td>${a==null?'—':Math.round(a*100)+'%'}</td><td style="width:22%">${bar(a||0,TOPICS[s.t].c)}</td><td class="muted" style="font-size:13px">${lastE&&lastE.e&&ERR[lastE.e]?ERR[lastE.e].l:''}</td></tr>`}).join('');
+ const ec={};items.forEach(i=>{if(i.st!=='ok'&&i.e&&i.e!=='blank')ec[i.e]=(ec[i.e]||0)+1});
+ const recentEc={};S.pages.slice(-5).flatMap(p=>p.items).forEach(i=>{if(i.st!=='ok'&&i.e)recentEc[i.e]=(recentEc[i.e]||0)+1});
+ const errs=Object.entries(ec).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([e,c])=>`<li><span class="cnt">${c}</span><b>${ERR[e].l}</b>${recentEc[e]?'':' <span class="muted" style="font-size:13px">(לא חזרה ב-5 הדפים האחרונים ✓)</span>'}<div class="muted" style="font-size:14px;margin-right:40px">${ERR[e].t}</div></li>`).join('');
+ const hist=S.pages.slice(-12).reverse().map(p=>{const d=new Date(p.t);return `<tr><td>${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</td><td>${p.score}/${p.n}</td><td style="width:40%">${bar(p.score/p.n,'linear-gradient(90deg,#7c5cff,#ff4f8b)')}</td></tr>`}).join('');
+ app.innerHTML=`<div class="phead"><h2>👨‍👩‍👧 מסך הורים</h2><button class="link" id="home">← חזרה</button></div>
+ <div class="pgrid"><div class="tile"><b>${S.pages.length}</b><span>דפים שהושלמו</span></div><div class="tile"><b>${tot}</b><span>תרגילים</span></div><div class="tile"><b>${tot?Math.round(acc*100)+'%':'—'}</b><span>הצלחה כוללת</span></div><div class="tile"><b>${S.days.length}</b><span>ימי תרגול</span></div></div>
+ ${trend!=null?`<div class="panel"><b>מגמה:</b> ${trend>=0?'📈 שיפור של':'📉 ירידה של'} ${Math.abs(trend)} נקודות אחוז בין 3 הדפים הראשונים ל-3 האחרונים.</div>`:''}
+ <div class="panel"><h3>לפי נושא</h3><table><tr><th>נושא</th><th>תרגילים</th><th>הצלחה כוללת</th><th>10 אחרונים</th><th></th></tr>${topicRows}</table></div>
+ <div class="panel"><h3>טעויות חוזרות</h3>${errs?`<ul class="errlist" style="list-style:none;padding:0;margin:0">${errs}</ul>`:'<div class="muted">עוד אין נתונים. התמונה תתמלא אחרי כמה דפים.</div>'}</div>
+ <div class="panel"><h3>לפי מיומנות</h3><div style="overflow-x:auto"><table><tr><th>מיומנות</th><th>ניסיונות</th><th>הצלחה</th><th></th><th>טעות אחרונה</th></tr>${skRows}</table></div>
+ <div class="muted" style="font-size:13px;margin-top:8px">האפליקציה בוחרת יותר תרגילים במיומנויות שבהן ההצלחה נמוכה, ופחות במיומנויות שכבר נשלטות.</div></div>
+ <div class="panel"><h3>דפים אחרונים</h3>${hist?`<table>${hist}</table>`:'<div class="muted">עוד לא הושלמו דפים.</div>'}</div>
+ <div class="actions"><button class="btn sec sm danger" id="reset">איפוס כל ההתקדמות</button></div>
+ `;
+ document.getElementById('home').onclick=()=>go('home');
+ document.getElementById('reset').onclick=async()=>{if(await modal('למחוק את כל ההתקדמות? אי אפשר לבטל את הפעולה.',['למחוק','ביטול'])){S=blank();save();toast('ההתקדמות אופסה');go('home')}};
+}
+function modal(text,[yes,no]){return new Promise(res=>{const o=document.createElement('div');o.className='ov';o.innerHTML=`<div class="mod"><p>${text}</p><div class="actions"><button class="btn sm" data-y>${yes}</button><button class="btn sec sm" data-n>${no}</button></div></div>`;document.body.appendChild(o);o.querySelector('[data-y]').onclick=()=>{o.remove();res(true)};o.querySelector('[data-n]').onclick=()=>{o.remove();res(false)}})}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2200)}
+function confetti(){
+ const c=document.createElement('canvas');c.className='confetti';document.body.appendChild(c);const x=c.getContext('2d');
+ const W=c.width=innerWidth,H=c.height=innerHeight,cols=['#7c5cff','#ff4f8b','#0fa894','#ff8a00','#ffd400'];
+ const ps=Array.from({length:150},()=>({x:Math.random()*W,y:-20-Math.random()*H*.6,vx:(Math.random()-.5)*4,vy:2+Math.random()*4,r:5+Math.random()*7,c:pick(cols),a:Math.random()*6,va:(Math.random()-.5)*.3}));
+ const t0=performance.now();
+ (function f(t){x.clearRect(0,0,W,H);for(const p of ps){p.x+=p.vx;p.y+=p.vy;p.vy+=.04;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()}if(t-t0<3500)requestAnimationFrame(f);else c.remove()})(t0);
+}
+render();
+</script>
+</body>
+</html>
