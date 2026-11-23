@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Secular+One&display=swap" rel="stylesheet">
 <style>
-:root{--ink:#2b2350;--muted:#6f6790;--line:#e7e2f7;--ratio:#7c5cff;--pct:#ff4f8b;--pyth:#0fa894;--ang:#ff8a00;--ok:#16a34a;--bad:#e11d48;--part:#d97706}
+:root{--stat:#2f7bf5;--circ:#d43fc8;--ink:#2b2350;--muted:#6f6790;--line:#e7e2f7;--ratio:#7c5cff;--pct:#ff4f8b;--pyth:#0fa894;--ang:#ff8a00;--ok:#16a34a;--bad:#e11d48;--part:#d97706}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font-family:Rubik,system-ui,sans-serif;color:var(--ink);background:linear-gradient(160deg,#ffe3f1 0%,#ece8ff 45%,#dcf6f1 100%);background-attachment:fixed;min-height:100vh;font-size:17px;line-height:1.55}
@@ -80,6 +80,30 @@ button{font-family:inherit;cursor:pointer;border:0}
 .ratio .part{display:flex;flex-direction:column;align-items:center;gap:4px}
 .ratio .part small{font-size:13px;color:var(--muted);font-weight:600;direction:rtl}
 .ratio .inp{width:96px}
+/* topic picker & new content */
+.pickhead{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
+.pickhead h3{font-size:21px}
+.tcard.pickable{font:inherit;color:inherit;text-align:right;cursor:pointer;position:relative;border:2.5px solid transparent;border-bottom:5px solid var(--c);transition:transform .15s,box-shadow .15s,opacity .2s;opacity:.62}
+.tcard.pickable.sel{opacity:1;border-color:var(--c);box-shadow:0 8px 22px color-mix(in srgb,var(--c) 25%,transparent)}
+.tcard.pickable:active{transform:scale(.97)}
+.chk{position:absolute;left:10px;top:10px;width:24px;height:24px;border-radius:50%;border:2px solid #d9d3ee;display:grid;place-items:center;font-weight:800;font-size:14px;color:#fff}
+.sel .chk{background:var(--c);border-color:var(--c)}
+.newb{position:absolute;left:14px;top:-11px;box-shadow:0 2px 6px rgba(0,0,0,.15);background:#ffd400;color:#5b3b00;font-size:12px;font-weight:800;padding:2px 8px;border-radius:99px}
+.tsub{font-size:13px;color:var(--muted);margin-top:2px;min-height:18px}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.dtab{border-collapse:collapse;margin:12px 0 6px;font-size:16px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 0 0 2px #e7e2f7}
+.dtab th,.dtab td{border:1.5px solid #e7e2f7;padding:6px 10px;text-align:center;min-width:38px}
+.dtab th{background:#f6f3ff;font-weight:700;font-size:14px;text-align:right;white-space:nowrap}
+.dtab td.hi{background:#fff3c4;font-weight:800}
+.rawlist{font-family:Rubik;font-weight:700;font-size:17px;letter-spacing:.5px;background:#f6f4fc;border-radius:14px;padding:10px 14px;margin:10px 0;line-height:1.9;word-spacing:3px}
+.inwrap{display:flex;flex-direction:row;align-items:center;gap:6px;direction:ltr;unicode-bidi:isolate}
+.sfx{font-size:24px;font-weight:800;color:var(--c)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{font:600 16px Rubik;padding:9px 16px;border-radius:14px;border:2.5px solid var(--line);background:#fbfaff;color:var(--ink)}
+.opt.sel{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c)}
+.sol .dtab{font-size:14px}
+.sol svg{max-width:100%;height:auto}
+@media (max-width:560px){.dtab{font-size:14px}.dtab th,.dtab td{padding:5px 6px;min-width:28px}}
 /* results */
 .rhero{background:#fff;border-radius:28px;padding:24px;text-align:center;box-shadow:0 10px 26px rgba(43,35,80,.1)}
 .score{font-family:'Secular One';font-size:58px;line-height:1;background:linear-gradient(135deg,#7c5cff,#ff4f8b);-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -503,8 +527,245 @@ function genA2(){
  };
 }
 
+/* ===================== statistics & circle ===================== */
+Object.assign(ERR,{
+ count_miss:{l:'טעות בספירה',t:'כדאי לסמן ✓ על כל נתון שספרת, ולבדוק בסוף שסכום השכיחויות שווה למספר הנתונים.'},
+ count_columns:{l:'ספרת עמודות במקום נתונים',t:'מספר הנתונים הכולל הוא סכום השכיחויות (השורה התחתונה בטבלה), לא מספר העמודות.'},
+ sum_values:{l:'חיברת את הערכים במקום את השכיחויות',t:'סך הכול = סכום השכיחויות. את הערכים עצמם (ציונים, מידות) לא מחברים.'},
+ val_freq_swap:{l:'בלבול בין ערך לשכיחות',t:'הערך הוא מה שנמדד (ציון, מידה, משקל). השכיחות היא כמה פעמים הערך מופיע.'},
+ mode_wrong:{l:'זה לא השכיח',t:'השכיח הוא הערך שמופיע הכי הרבה פעמים. חפשי את המספר הגדול ביותר בשורת השכיחויות, וקחי את הערך שמעליו.'},
+ mode_max:{l:'השכיח הוא לא הערך הגדול',t:'השכיח הוא הערך שמופיע הכי הרבה פעמים, כלומר זה עם השכיחות הגבוהה ביותר.'},
+ range_zero:{l:'כללת ערך שלא מופיע',t:'ערך עם שכיחות 0 לא נמצא בנתונים, ולכן הוא לא חלק מהטווח.'},
+ rel_used_value:{l:'השתמשת בערך במקום בשכיחות',t:'שכיחות יחסית = השכיחות של הערך ÷ סך כל השכיחויות. למשל ציון 9 שהופיע 10 פעמים מתוך 40: 10/40, ולא 9/40.'},
+ rel_denominator:{l:'מכנה לא נכון',t:'במכנה תמיד סך כל השכיחויות, כלומר מספר הנתונים הכולל.'},
+ pct_convert:{l:'טעות במעבר בין שבר, עשרוני ואחוזים',t:'מעשרוני לאחוזים כופלים ב-100: 0.25 = 25%. משבר: 10/40 · 100 = 25%. מאחוזים לעשרוני מחלקים ב-100.'},
+ boundary:{l:'טעות בגבול',t:'"8 ומעלה" כולל את 8. "נמוך מ-8" לא כולל את 8.'},
+ bar_read:{l:'קריאה לא נכונה של הדיאגרמה',t:'עקבי מראש העמודה ישר אל הציר האנכי, ובדקי שזו העמודה של הערך הנכון.'},
+ pie_angle:{l:'טעות בחישוב זווית הגזרה',t:'זווית הגזרה = השכיחות היחסית × 360°. אחוזים הם לא מעלות.'},
+ circ_forgot2:{l:'שכחת את ה-2 בנוסחת ההיקף',t:'P = 2 · π · R.'},
+ circ_formula_swap:{l:'בלבול בין היקף לשטח',t:'היקף (אורך הקו מסביב): P = 2πR. שטח (כמה מקום יש בפנים): S = πR².'},
+ circ_square_pi:{l:'ריבעת גם את π',t:'בנוסחה S = π · R² רק הרדיוס בריבוע: 3.14 · 5² = 3.14 · 25.'},
+ circ_diameter:{l:'בלבול בין קוטר לרדיוס',t:'הרדיוס הוא חצי מהקוטר: R = d ÷ 2. בנוסחאות מציבים רדיוס.'},
+ circ_forgot_pi:{l:'שכחת לחלק ב-π',t:'P = 2πR, ולכן R = P ÷ (2 · 3.14).'},
+ pi_form:{l:'בצורת π כותבים רק את המקדם',t:'"ככפולה של π" לא מציבים 3.14: P = 2 · π · 3 = 6π, ובתיבה כותבים 6.'}
+});
+const NUMCTX=[
+ {d:'מידות הטבעות שנמכרו בדוכן תכשיטים ביריד',vals:[5,6,7,8,9],vl:'מידת הטבעת',vq:'מהי מידת הטבעת',fl:'מספר הטבעות',who:'טבעות',pre:'במידה'},
+ {d:'מידות הנעליים של הבנות בשכבה',vals:[36,37,38,39,40],vl:'מידת הנעל',vq:'מהי מידת הנעל',fl:'מספר הבנות',who:'בנות',pre:'עם מידה'},
+ {d:'מספר החרוזים בכל צמיד שהכינה נועה לחברות שלה',vals:[10,12,14,16,18],vl:'מספר החרוזים',vq:'מהו מספר החרוזים',fl:'מספר הצמידים',who:'צמידים',pre:'עם מספר חרוזים'},
+ {d:'הדירוג (בכוכבים) שנתנו לקוחות לקאפקייקס בקונדיטוריה',vals:[1,2,3,4,5],vl:'דירוג',vq:'מהו הדירוג',fl:'מספר הלקוחות',who:'לקוחות',pre:'שנתנו דירוג'},
+ {d:'המשקל (בק"ג) של הגורים שנולדו בכלבייה החודש',vals:[2,3,4,5,6],vl:'משקל (ק"ג)',vq:'מהו המשקל',fl:'מספר הגורים',who:'גורים',pre:'במשקל'},
+ {d:'מספר חיות המחמד בבית של כל תלמידה בכיתה',vals:[0,1,2,3,4],vl:'מספר חיות',vq:'מהו מספר החיות',fl:'מספר התלמידות',who:'תלמידות',pre:'עם מספר חיות'},
+ {d:'מספר העוגיות שאפתה כל משתתפת בסדנת אפייה',vals:[8,10,12,14,16],vl:'מספר עוגיות',vq:'מהו מספר העוגיות',fl:'מספר המשתתפות',who:'משתתפות',pre:'שאפו'},
+ {d:'הציונים במבחן בכיתה',vals:[5,6,7,8,9,10],vl:'הציון',vq:'מהו הציון',fl:'מספר התלמידים',who:'תלמידים',pre:'שקיבלו ציון'}
+];
+const CATCTX=[
+ {d:'סקר: מה החיה האהובה על תלמידות השכבה?',cats:['כלב','חתול','ארנב','אוגר','סוס'],who:'תלמידות',fl:'מספר התלמידות',ask:x=>`כמה תלמידות בחרו ב"${x}"?`},
+ {d:'הטעמים של הקאפקייקס שנמכרו בדוכן ביום אחד',cats:['שוקולד','וניל','תות','לוטוס','רד ולווט'],who:'קאפקייקס',fl:'כמה נמכרו',ask:x=>`כמה קאפקייקס בטעם ${x} נמכרו?`},
+ {d:'הצבעים של הלקים שנמכרו בחנות קוסמטיקה',cats:['ורוד','אדום','סגול','תכלת','שקוף'],who:'לקים',fl:'כמה נמכרו',ask:x=>`כמה לקים בצבע ${x} נמכרו?`},
+ {d:'סקר: איזה תכשיט הכי אהוב על בנות הכיתה?',cats:['צמיד','עגילים','שרשרת','טבעת'],who:'בנות',fl:'מספר הבנות',ask:x=>`כמה בנות בחרו ב"${x}"?`}
+];
+const PIECOL=['#ff4f8b','#7c5cff','#0fa894','#ff8a00','#3b82f6'];
+function makeFreqs(k,N,minF=1){
+ let f,g=0;
+ do{f=Array(k).fill(minF);let rem=N-k*minF;while(rem>0){f[R(0,k-1)]++;rem--}g++}
+ while(g<500&&(new Set(f).size<Math.min(k,4)||f.filter(x=>x===Math.max(...f)).length>1));
+ return f;
+}
+const sumA=a=>a.reduce((x,y)=>x+y,0);
+function tableHtml(l1,l2,vals,freqs,hi){
+ return `<table class="dtab"><tr><th>${l1}</th>${vals.map((v,i)=>`<td${i===hi?' class="hi"':''}>${v}</td>`).join('')}</tr><tr><th>${l2}</th>${freqs.map((f,i)=>`<td${i===hi?' class="hi"':''}>${f}</td>`).join('')}</tr></table>`;
+}
+function barSvg(vals,freqs,xl,yl){
+ const W=330,H=220,L=40,B=34,T=14,mx=Math.max(...freqs),top=mx+1,cw=(W-L-12)/vals.length,Y=v=>H-B-(v/top)*(H-B-T);
+ let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" direction="ltr" font-family="Rubik">`;
+ for(let g=0;g<=top;g++){s+=`<line x1="${L}" y1="${Y(g)}" x2="${W-8}" y2="${Y(g)}" stroke="${g?'#ece8f8':'#2b2350'}" stroke-width="${g?1:2}"/>`;if(top<=14||g%2===0)s+=`<text x="${L-8}" y="${Y(g)+4}" text-anchor="end" font-size="11" fill="#6f6790">${g}</text>`}
+ s+=`<line x1="${L}" y1="${T-4}" x2="${L}" y2="${H-B}" stroke="#2b2350" stroke-width="2"/>`;
+ vals.forEach((v,i)=>{const x=L+i*cw+cw*.2,w=cw*.6;s+=`<rect x="${x}" y="${Y(freqs[i])}" width="${w}" height="${Y(0)-Y(freqs[i])}" rx="5" fill="#3b82f6"/><text x="${x+w/2}" y="${H-B+18}" text-anchor="middle" font-size="13" font-weight="700" fill="#2b2350">${v}</text>`});
+ s+=`<text x="${W-8}" y="${H-4}" text-anchor="end" font-size="11" fill="#6f6790">${xl}</text><text x="${L+4}" y="${T-2}" font-size="11" fill="#6f6790">${yl}</text>`;
+ return s+'</svg>';
+}
+function pieSvg(labels,shares,showPct=true,hide=-1){
+ const W=330,H=230,cx=112,cy=115,r=100;let a=-Math.PI/2,s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" xmlns="http://www.w3.org/2000/svg" direction="ltr" font-family="Rubik">`,lab='';
+ shares.forEach((p,i)=>{const b=a+p*2*Math.PI,x1=cx+r*Math.cos(a),y1=cy+r*Math.sin(a),x2=cx+r*Math.cos(b),y2=cy+r*Math.sin(b),m=(a+b)/2;
+  s+=`<path d="M${cx},${cy} L${x1.toFixed(1)},${y1.toFixed(1)} A${r},${r} 0 ${p>.5?1:0} 1 ${x2.toFixed(1)},${y2.toFixed(1)} Z" fill="${PIECOL[i%5]}" stroke="#fff" stroke-width="2"/>`;
+  if(showPct&&p>=.06)lab+=`<text x="${(cx+r*.64*Math.cos(m)).toFixed(1)}" y="${(cy+r*.64*Math.sin(m)+5).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="800" fill="#fff">${i===hide?'?':Math.round(p*100)+'%'}</text>`;
+  a=b});
+ labels.forEach((l,i)=>{s+=`<rect x="${W-20}" y="${30+i*28}" width="15" height="15" rx="4" fill="${PIECOL[i%5]}"/><text x="${W-26}" y="${42+i*28}" text-anchor="end" font-size="14" font-weight="600" fill="#2b2350">${l}</text>`});
+ return s+lab+'</svg>';
+}
+function numCtx(minN=12,maxN=30,Ns){const c=pick(NUMCTX);const k=c.vals.length;const N=Ns?pick(Ns):R(Math.max(minN,k+6),maxN);return{c,N,f:makeFreqs(k,N)}}
+function genS1(){ // count from raw list
+ const c=pick(NUMCTX.filter(x=>x.vals.length===5)),k=R(4,5),vals=c.vals.slice(0,k),N=R(13,18),f=makeFreqs(k,N);
+ const list=shuffle(vals.flatMap((v,i)=>Array(f[i]).fill(v)));const j=R(0,k-1),v=vals[j];
+ return{
+  q:`${c.d}:<div class="rawlist" dir="ltr">${list.join(', ')}</div><b>א) כמה פעמים מופיע הערך ${v}? &nbsp; ב) כמה נתונים יש בסך הכול?</b>`,
+  fields:[{k:'x',kind:'num',label:`א) השכיחות של ${v}`},{k:'n',kind:'num',label:'ב) מספר הנתונים'}],
+  check:vv=>combine([checkNum(vv.x,f[j],[[f[j]+1,'count_miss'],[f[j]-1,'count_miss'],[f[j]+2,'count_miss'],[v,'val_freq_swap']]),checkNum(vv.n,N,[[N+1,'count_miss'],[N-1,'count_miss'],[N+2,'count_miss'],[N-2,'count_miss'],[k,'count_columns'],[sumA(list),'sum_values']])]),
+  ans:`${f[j]} פעמים · ${N} נתונים`,key:{x:f[j],n:N},
+  sol:[`מרכזים בטבלת שכיחויות:${tableHtml(c.vl,c.fl,vals,f,j)}`,`השכיחות של ${v}: ${f[j]}`,`סך הכול: ${M(f.join(' + ')+' = '+N)} (בדיקה: זה מספר הנתונים ברשימה)`]
+ };
+}
+function genS2(){ // read table: total + value with given frequency
+ let o;do{o=numCtx(14,40)}while(o.f.filter(x=>o.f.filter(y=>y===x).length===1).length===0);
+ const {c,N,f}=o,uniq=f.map((x,i)=>i).filter(i=>f.filter(y=>y===f[i]).length===1),j=pick(uniq),k=f[j],v=c.vals[j];
+ return{
+  q:`בטבלה מתוארות ${c.d}.${tableHtml(c.vl,c.fl,c.vals,f)}<b>א) כמה ${c.who} יש בסך הכול? &nbsp; ב) ${c.vq} ששכיחותו ${k}?</b>`,
+  fields:[{k:'n',kind:'num',label:'א) סך הכול'},{k:'v',kind:'num',label:`ב) ${c.vl.replace(/\s*\(.*\)/,'')}`}],
+  check:vv=>combine([checkNum(vv.n,N,[[sumA(c.vals),'sum_values'],[c.vals.length,'count_columns']]),checkNum(vv.v,v,[[k,'val_freq_swap'],[f[c.vals.indexOf(k)],'val_freq_swap']])]),
+  ans:`${N} · ${v}`,key:{n:N,v},
+  sol:[`סך הכול = סכום השכיחויות: ${M(f.join(' + ')+' = '+N)}`,`מחפשים בשורה התחתונה את השכיחות ${k}, ומעליה הערך: ${v}`,`שימי לב: ${k} היא השכיחות (כמה פעמים), ו-${v} הוא הערך.`]
+ };
+}
+function genS3(){ // mode
+ if(Math.random()<.35){
+  const c=pick(CATCTX),k=c.cats.length,N=R(18,34),f=makeFreqs(k,N),mi=f.indexOf(Math.max(...f));
+  const opts=c.cats.map((x,i)=>({h:x,e:i===mi?null:'mode_wrong'}));
+  return{q:`${c.d}${tableHtml('',c.fl,c.cats,f)}<b>מהו השכיח, ומהי השכיחות שלו?</b>`,
+   fields:[{k:'c',kind:'choice',opts,label:'השכיח'},{k:'x',kind:'num',label:'השכיחות שלו'}],
+   check:vv=>combine([checkChoice(vv.c,opts),checkNum(vv.x,f[mi],[[N,'rel_denominator']])]),
+   ans:`${c.cats[mi]} (${f[mi]})`,key:{c:mi,x:f[mi]},
+   sol:[`השכיח הוא הפריט עם השכיחות הגבוהה ביותר.`,`השכיחות הגבוהה ביותר: ${f[mi]}, ולכן השכיח הוא <b>${c.cats[mi]}</b>.`]};
+ }
+ const {c,N,f}=numCtx(14,40),mi=f.indexOf(Math.max(...f)),mv=c.vals[mi];
+ return{q:`בטבלה מתוארות ${c.d}.${tableHtml(c.vl,c.fl,c.vals,f)}<b>מהו השכיח, ומהי השכיחות שלו?</b>`,
+  fields:[{k:'m',kind:'num',label:'השכיח'},{k:'x',kind:'num',label:'השכיחות שלו'}],
+  check:vv=>combine([(r=>r.e==='arithmetic'?{st:r.st,e:'mode_wrong'}:r)(checkNum(vv.m,mv,[[f[mi],'val_freq_swap'],[c.vals[c.vals.length-1],'mode_max']])),checkNum(vv.x,f[mi],[[mv,'val_freq_swap'],[N,'rel_denominator']])]),
+  ans:`שכיח ${mv}, שכיחות ${f[mi]}`,key:{m:mv,x:f[mi]},
+  sol:[`מחפשים בשורת השכיחויות את המספר הגדול ביותר: ${f[mi]}`,`הערך שמעליו הוא השכיח: <b>${mv}</b>`,`השכיח הוא ערך (${mv}), והשכיחות שלו היא כמה פעמים הוא הופיע (${f[mi]}).`]};
+}
+function genS4(){ // range
+ const {c,N,f}=numCtx(14,36);const ff=f.slice();let zi=-1;
+ if(Math.random()<.5){zi=Math.random()<.5?0:ff.length-1;const moved=ff[zi];ff[zi]=0;ff[zi===0?1:ff.length-2]+=moved}
+ const nz=c.vals.filter((v,i)=>ff[i]>0),lo=nz[0],hi=nz[nz.length-1];
+ const fnz=ff.filter(x=>x>0);
+ return{q:`בטבלה מתוארות ${c.d}.${tableHtml(c.vl,c.fl,c.vals,ff)}<b>מהו טווח הנתונים? (מהערך הקטן ביותר עד הגדול ביותר)</b>`,
+  fields:[{k:'a',kind:'num',label:'מ- (הקטן)'},{k:'b',kind:'num',label:'עד (הגדול)'}],
+  check:vv=>combine([checkNum(vv.a,lo,[[c.vals[0],'range_zero'],[Math.min(...fnz),'val_freq_swap']]),checkNum(vv.b,hi,[[c.vals[c.vals.length-1],'range_zero'],[Math.max(...fnz),'val_freq_swap']])]),
+  ans:`${lo} – ${hi}`,key:{a:lo,b:hi},
+  sol:[zi>=0?`לערך ${c.vals[zi]} השכיחות היא 0, כלומר הוא לא מופיע בנתונים.`:'כל הערכים בטבלה מופיעים לפחות פעם אחת.',`הערך הקטן ביותר שמופיע: ${lo}, והגדול ביותר: ${hi}`,`טווח הנתונים: ${M(lo+' – '+hi)} (ההפרש ביניהם: ${hi-lo})`]};
+}
+function genS5(){ // relative frequency: fraction, decimal, percent
+ const {c,N,f}=numCtx(0,0,[20,25,40,50]);const j=R(0,c.vals.length-1),v=c.vals[j],fr=f[j],dec=fr/N,pc=Math.round(fr/N*10000)/100,g=gcd(fr,N);
+ return{q:`בטבלה מתוארות ${c.d}.${tableHtml(c.vl,c.fl,c.vals,f)}<b>מהי השכיחות היחסית של ${v}? רשמי אותה כשבר פשוט, כשבר עשרוני וכאחוזים.</b>`,
+  fields:[{k:'r',kind:'frac'},{k:'d',kind:'num',label:'שבר עשרוני'},{k:'p',kind:'num',label:'אחוזים (%)'}],
+  check:vv=>combine([checkFrac(vv.r_a,vv.r_b,fr,N,[[v,N,'rel_used_value'],[fr,c.vals.length,'rel_denominator'],[fr,N-fr,'rel_denominator']]),
+   checkNum(vv.d,dec,[[v/N,'rel_used_value'],[pc,'pct_convert'],[fr/100,'pct_convert']]),
+   checkNum(vv.p,pc,[[dec,'pct_convert'],[v/N*100,'rel_used_value'],[fr,'pct_convert']])]),
+  ans:`${M(fr+'/'+N+(g>1?' = '+fr/g+'/'+N/g:''))} · ${M(String(dec))} · ${M(pc+'%')}`,key:{r_a:fr,r_b:N,d:dec,p:pc},
+  sol:[`השכיחות של ${v} היא ${fr} (לא ${v}!), וסך כל השכיחויות: ${M(f.join('+')+' = '+N)}`,`שבר פשוט: ${M(fr+'/'+N)}${g>1?' = '+M(fr/g+'/'+N/g):''}`,`שבר עשרוני: ${M(fr+' ÷ '+N+' = '+dec)}`,`אחוזים: ${M(dec+' · 100 = '+pc+'%')}`]};
+}
+function genS6(){ // counting with a condition + percent
+ const {c,N,f}=numCtx(0,0,[20,25,40,50]);const k=c.vals.length,ti=R(1,k-2),t=c.vals[ti],up=Math.random()<.5;
+ const idx=c.vals.map((v,i)=>i).filter(i=>up?i>=ti:i<ti),cnt=sumA(idx.map(i=>f[i])),pc=Math.round(cnt/N*10000)/100;
+ const alt=sumA(c.vals.map((v,i)=>i).filter(i=>up?i>ti:i<=ti).map(i=>f[i]));
+ const ph=up?`${t} ומעלה`:`נמוך מ-${t}`;
+ return{q:`בטבלה מתוארות ${c.d}.${tableHtml(c.vl,c.fl,c.vals,f)}<b>א) כמה ${c.who} ${c.pre} ${ph}? &nbsp; ב) איזה אחוז הם מכלל ה${c.who}?</b>`,
+  fields:[{k:'x',kind:'num',label:'א) כמה'},{k:'p',kind:'num',label:'ב) אחוזים (%)'}],
+  check:vv=>combine([checkNum(vv.x,cnt,[[alt,'boundary'],[sumA(idx.map(i=>c.vals[i])),'sum_values']]),checkNum(vv.p,pc,[[cnt/N,'pct_convert'],[alt/N*100,'boundary']])]),
+  ans:`${cnt} · ${pc}%`,key:{x:cnt,p:pc},
+  sol:[`"${ph}" ${up?'כולל את '+t:'לא כולל את '+t}: הערכים ${idx.map(i=>c.vals[i]).join(', ')}`,`מחברים את השכיחויות שלהם: ${M(idx.map(i=>f[i]).join(' + ')+' = '+cnt)}`,`אחוזים: ${M(cnt+'/'+N+' · 100 = '+pc+'%')}`]};
+}
+function genS7(){ // bar chart reading
+ const {c,N,f}=numCtx(14,40);const j=R(0,c.vals.length-1),v=c.vals[j];
+ const nb=[f[j-1],f[j+1]].filter(x=>x!=null&&x!==f[j]);
+ return{q:`בדיאגרמת העמודות מתוארות ${c.d}.<b> א) כמה ${c.who} ${c.pre} ${v}? &nbsp; ב) כמה ${c.who} יש בסך הכול?</b>`,
+  svg:barSvg(c.vals,f,c.vl.replace(/\s*\(.*\)/,''),c.fl),
+  fields:[{k:'x',kind:'num',label:'א) כמה'},{k:'n',kind:'num',label:'ב) סך הכול'}],
+  check:vv=>combine([checkNum(vv.x,f[j],[...nb.map(x=>[x,'bar_read']),[f[j]+1,'bar_read'],[f[j]-1,'bar_read'],[v,'val_freq_swap']]),checkNum(vv.n,N,[[sumA(c.vals),'sum_values'],[c.vals.length,'count_columns']])]),
+  ans:`${f[j]} · ${N}`,key:{x:f[j],n:N},
+  sol:[`גובה העמודה מעל ${v} הוא ${f[j]}`,`סך הכול = סכום גובהי כל העמודות: ${M(f.join(' + ')+' = '+N)}`,`בטבלה:${tableHtml(c.vl,c.fl,c.vals,f,j)}`]};
+}
+function genS8(){ // pie chart
+ const c=pick(CATCTX),k=c.cats.length;
+ if(Math.random()<.5){ // angle of a sector from a table
+  const N=pick([20,24,30,36,40,60]),f=makeFreqs(k,N),j=R(0,k-1),ang=f[j]/N*360,pc=Math.round(f[j]/N*10000)/100;
+  return{q:`${c.d}${tableHtml('',c.fl,c.cats,f)}<b>רוצים לבנות דיאגרמת עוגה. מה גודל הזווית (במעלות) של הגזרה "${c.cats[j]}"?</b>`,
+   fields:[{k:'a',kind:'num',label:'זווית (°)'}],
+   check:vv=>checkNum(vv.a,ang,[[pc,'pie_angle'],[f[j],'pie_angle'],[f[j]/N,'pie_angle'],[f[j]*36,'pie_angle']]),
+   ans:`${ang}°`,key:{a:ang},
+   sol:[`שכיחות יחסית: ${M(f[j]+'/'+N)}`,`הזווית: ${M(f[j]+'/'+N+' · 360° = '+ang+'°')}`,`בדיקה: סכום כל הזוויות בעוגה הוא 360°.${pieSvg(c.cats,f.map(x=>x/N))}`]};
+ }
+ const N=pick([20,40,60,80,200]),f=makeFreqs(k,20).map(x=>x*N/20);
+ const j=R(0,k-1),p=f[j]*100/N;
+ return{q:`${c.d.replace(/[:?]$/,'')}. סך הכול: ${N} ${c.who}. התוצאות מוצגות בדיאגרמת העוגה.<br><b>${c.ask(c.cats[j])}</b>`,
+  svg:pieSvg(c.cats,f.map(x=>x/N)),
+  fields:[{k:'x',kind:'num',label:'כמה'}],
+  check:vv=>checkNum(vv.x,f[j],[[p,'pct_convert'],[p/100,'pct_convert'],[N/p,'pct_convert']]),
+  ans:String(f[j]),key:{x:f[j]},
+  sol:[`הגזרה "${c.cats[j]}" היא ${p}% מהעוגה.`,`${p}% מתוך ${N}: ${M(N+' · '+p/100+' = '+f[j])}`]};
+}
+/* ---- circle ---- */
+const CIRC=[
+ {o:'עוגת יום הולדת עגולה',P:'כמה סרט קישוט (בס"מ) צריך כדי להקיף את העוגה פעם אחת?',S:'מה שטח פני העוגה שצריך לכסות בקצפת (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:8,hi:15},
+ {o:'פיצה משפחתית עגולה',P:'מה אורך השוליים של הפיצה (ההיקף, בס"מ)?',S:'מה שטח הפיצה (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:10,hi:20},
+ {o:'עוגייה ענקית עגולה',P:'מה היקף העוגייה (בס"מ)?',S:'מה שטח העוגייה שצריך לקשט בציפוי (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:5,hi:12},
+ {o:'צמיד חישוק עגול',P:'מה אורך החוט (בס"מ) שצריך כדי ליצור את הצמיד?',S:'מה השטח שהצמיד מקיף (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:3,hi:5},
+ {o:'מראה עגולה בחדר',P:'כמה פס נצנצים (בס"מ) צריך כדי לעטר את שולי המראה?',S:'מה שטח המראה (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:10,hi:30},
+ {o:'מיטה עגולה לכלב',P:'כמה פס פרווה (בס"מ) צריך כדי לתפור מסביב למיטה?',S:'מה שטח המיטה (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:20,hi:40},
+ {o:'שטיח עגול לחדר',P:'כמה מטר פרנזים צריך כדי לתפור מסביב לשטיח?',S:'מה שטח השטיח (במ"ר)?',u:'מ\'',u2:'מ"ר',lo:1,hi:3},
+ {o:'גלגל ריצה של אוגר',P:'כמה ס"מ רץ האוגר בסיבוב אחד שלם של הגלגל (ההיקף)?',S:'מה שטח הגלגל (בסמ"ר)?',u:'ס"מ',u2:'סמ"ר',lo:7,hi:12}
+];
+const c314=x=>Math.round(x*100)/100;
+function checkPi(raw,c,traps){const s=String(raw||'').trim();if(!s)return{st:'blank',e:'blank'};const v=parseNum(s);if(isNaN(v))return{st:'wrong',e:'arithmetic'};
+ const tol=Math.max(.02,Math.abs(c)*.0012);if(Math.abs(v-c)<=tol)return{st:'ok'};
+ for(const [t,e] of traps){if(t==null||!isFinite(t)||Math.abs(t-c)<=tol)continue;if(Math.abs(v-t)<=Math.max(.02,Math.abs(t)*.0012))return{st:'wrong',e}}return{st:'wrong',e:'arithmetic'}}
+function genC1(){ // perimeter: π form + numeric
+ const o=pick(CIRC),Rr=R(o.lo,o.hi),useD=Math.random()<.4,d=2*Rr;
+ const P=c314(2*3.14*Rr);
+ return{q:`${o.o}: ${useD?`הקוטר הוא ${d} ${o.u}`:`הרדיוס הוא ${Rr} ${o.u}`}.<br><b>${o.P}</b> <span class="hint">רשמי ככפולה של π ובערך מספרי (π ≈ 3.14).</span>`,
+  fields:[{k:'k',kind:'num',label:'P =  ___ π',sfx:'π'},{k:'x',kind:'num',label:`P במספרים (${o.u})`}],
+  check:v=>combine([checkPi(v.k,2*Rr,[[Rr,'circ_forgot2'],[Rr*Rr,'circ_formula_swap'],[P,'pi_form'],[2*d,'circ_diameter']]),
+   checkPi(v.x,P,[[c314(3.14*Rr),'circ_forgot2'],[c314(3.14*Rr*Rr),'circ_formula_swap'],[c314(2*3.14*d),'circ_diameter'],[c314(3.14*d*d),'circ_diameter']])]),
+  ans:`${M(2*Rr+'π')} ≈ ${M(P+' '+o.u)}`,key:{k:2*Rr,x:P},
+  sol:[useD?`הרדיוס הוא חצי מהקוטר: ${M('R = '+d+' ÷ 2 = '+Rr)}`:`הרדיוס: ${M('R = '+Rr)}`,`${M('P = 2 · π · '+Rr+' = '+2*Rr+'π')}`,`${M('P ≈ 2 · 3.14 · '+Rr+' = '+P)} ${o.u}`]};
+}
+function genC2(){ // area
+ const o=pick(CIRC),Rr=R(o.lo,o.hi),useD=Math.random()<.4,d=2*Rr,S=c314(3.14*Rr*Rr);
+ return{q:`${o.o}: ${useD?`הקוטר הוא ${d} ${o.u}`:`הרדיוס הוא ${Rr} ${o.u}`}.<br><b>${o.S}</b> <span class="hint">רשמי ככפולה של π ובערך מספרי (π ≈ 3.14).</span>`,
+  fields:[{k:'k',kind:'num',label:'S =  ___ π',sfx:'π'},{k:'x',kind:'num',label:`S במספרים (${o.u2})`}],
+  check:v=>combine([checkPi(v.k,Rr*Rr,[[2*Rr,'sq_doubled'],[S,'pi_form'],[d*d,'circ_diameter'],[Rr,'sq_doubled']]),
+   checkPi(v.x,S,[[c314(3.14*2*Rr),'sq_doubled'],[c314((3.14*Rr)**2),'circ_square_pi'],[c314(3.14*d*d),'circ_diameter'],[c314(3.14*Rr),'sq_doubled']])]),
+  ans:`${M(Rr*Rr+'π')} ≈ ${M(S+' '+o.u2)}`,key:{k:Rr*Rr,x:S},
+  sol:[useD?`הרדיוס הוא חצי מהקוטר: ${M('R = '+d+' ÷ 2 = '+Rr)}`:`הרדיוס: ${M('R = '+Rr)}`,`${M('S = π · '+Rr+'² = π · '+Rr*Rr+' = '+Rr*Rr+'π')}`,`${M('S ≈ 3.14 · '+Rr*Rr+' = '+S)} ${o.u2}`,`זכרי: ${M(Rr+'² = '+Rr+' · '+Rr)}, ולא ${M(Rr+' · 2')}`]};
+}
+function genC3(){ // from perimeter back to radius & diameter
+ const o=pick(CIRC.filter(x=>x.u==='ס"מ')),Rr=R(o.lo,o.hi),d=2*Rr,piForm=Math.random()<.4,P=c314(6.28*Rr);
+ return{q:`${o.o}: ההיקף הוא ${piForm?M(d+'π')+' '+o.u:P+' '+o.u+' (π ≈ 3.14)'}.<br><b>מה הרדיוס, ומה הקוטר?</b>`,
+  fields:[{k:'r',kind:'num',label:`רדיוס R (${o.u})`},{k:'d',kind:'num',label:`קוטר d (${o.u})`}],
+  check:v=>combine([checkPi(v.r,Rr,[[d,'circ_diameter'],[c314(P/2),'circ_forgot_pi'],[Math.sqrt(P/3.14),'circ_formula_swap'],[P/2,'circ_forgot_pi']]),checkPi(v.d,d,[[Rr,'circ_diameter'],[4*Rr,'circ_diameter']])]),
+  ans:`R = ${Rr}, d = ${d}`,key:{r:Rr,d},
+  sol:[piForm?`${M('2 · π · R = '+d+'π')} ⟸ ${M('2R = '+d)}`:`${M('2 · 3.14 · R = '+P)} ⟸ ${M('6.28 · R = '+P)}`,`${M('R = '+(piForm?d+' ÷ 2':P+' ÷ 6.28')+' = '+Rr)}`,`הקוטר כפול מהרדיוס: ${M('d = 2 · '+Rr+' = '+d)}`]};
+}
+function genC4(){ // compare: which pizza is bigger / how many times area
+ const o=pick([{a:'פיצה אישית',b:'פיצה משפחתית'},{a:'עוגייה קטנה',b:'עוגייה ענקית'},{a:'עוגה קטנה',b:'עוגה גדולה'}]);
+ const r1=R(3,8),m=pick([2,3]),r2=r1*m;
+ return{q:`ל${o.a} רדיוס של ${r1} ס"מ, ול${o.b} רדיוס של ${r2} ס"מ (פי ${m}).<br><b>א) פי כמה גדול ההיקף של ה${o.b.split(' ')[0]} הגדולה? &nbsp; ב) פי כמה גדול השטח שלה?</b>`,
+  fields:[{k:'p',kind:'num',label:'א) ההיקף גדול פי'},{k:'s',kind:'num',label:'ב) השטח גדול פי'}],
+  check:v=>combine([checkPi(v.p,m,[[m*m,'circ_formula_swap'],[2*m,'circ_forgot2']]),checkPi(v.s,m*m,[[m,'sq_doubled'],[2*m,'sq_doubled']])]),
+  ans:`היקף פי ${m}, שטח פי ${m*m}`,key:{p:m,s:m*m},
+  sol:[`היקפים: ${M('2π·'+r1+' = '+2*r1+'π')} ו-${M('2π·'+r2+' = '+2*r2+'π')} ⟸ פי ${m}`,`שטחים: ${M('π·'+r1+'² = '+r1*r1+'π')} ו-${M('π·'+r2+'² = '+r2*r2+'π')} ⟸ פי ${M(r2*r2+' ÷ '+r1*r1+' = '+m*m)}`,`כשהרדיוס גדל פי ${m}, השטח גדל פי ${m}² = ${m*m}. לכן הפיצה הגדולה שווה ${m*m} קטנות!`]};
+}
+function checkFrac(ra,rb,num,den,traps=[]){
+ if(!String(ra||'').trim()&&!String(rb||'').trim())return{st:'blank',e:'blank'};
+ const a=parseNum(ra),b=parseNum(rb);if(a==null||b==null||isNaN(a)||isNaN(b)||b===0)return{st:'wrong',e:'arithmetic'};
+ if(Math.abs(a*den-b*num)<1e-9)return{st:'ok'};
+ for(const [tn,td,e] of traps)if(Math.abs(a*td-b*tn)<1e-9&&Math.abs(tn*den-td*num)>1e-9)return{st:'wrong',e};
+ return{st:'wrong',e:'arithmetic'};
+}
+
+function checkChoice(v,opts){if(v==null||v==='')return{st:'blank',e:'blank'};const o=opts[+v];return o.e?{st:'wrong',e:o.e}:{st:'ok'}}
+
 /* ===================== skills & topics ===================== */
-const TOPICS={ratio:{n:'יחס',e:'⚖️',c:'var(--ratio)',prior:.15},pct:{n:'אחוזים',e:'💸',c:'var(--pct)',prior:.6},pyth:{n:'פיתגורס',e:'📐',c:'var(--pyth)',prior:.5},ang:{n:'זוויות',e:'📏',c:'var(--ang)',prior:.6}};
+/* להוספת נושא חדש: מוסיפים כאן שורה עם isNew:true, ומיומנויות ב-SK עם t:'<מזהה הנושא>' */
+const TOPICS={
+ stat:{n:'סטטיסטיקה',e:'📊',c:'var(--stat)',prior:.45,isNew:true,sub:'שכיחות, שכיח, טווח, דיאגרמות'},
+ circ:{n:'מעגל',e:'⭕',c:'var(--circ)',prior:.5,isNew:true,sub:'היקף ושטח'},
+ ratio:{n:'יחס',e:'⚖️',c:'var(--ratio)',prior:.15,sub:'צמצום, הגדלה, חלוקה'},
+ pct:{n:'אחוזים',e:'💸',c:'var(--pct)',prior:.6,sub:'הנחות ואחוז הפוך'},
+ pyth:{n:'פיתגורס',e:'📐',c:'var(--pyth)',prior:.5,sub:'יתר, ניצב, חזקות'},
+ ang:{n:'זוויות',e:'📏',c:'var(--ang)',prior:.6,sub:'זוויות בין ישרים מקבילים'}
+};
 const SK={
  R1:{t:'ratio',n:'צמצום יחס',w:2,prior:.3,g:genR1},
  R2:{t:'ratio',n:'יחס חלק לשלם',w:2,prior:.1,g:genR2},
@@ -518,7 +779,19 @@ const SK={
  G1:{t:'pyth',n:'מציאת היתר',w:2.2,prior:.2,g:genG1},
  G2:{t:'pyth',n:'מציאת ניצב',w:1.4,prior:.7,g:genG2},
  A1:{t:'ang',n:'זוויות שוות',w:2,prior:.5,g:genA1},
- A2:{t:'ang',n:'זוויות משלימות ל-180°',w:1.5,prior:.5,g:genA2}
+ A2:{t:'ang',n:'זוויות משלימות ל-180°',w:1.5,prior:.5,g:genA2},
+ S1:{t:'stat',n:'ספירת שכיחויות מרשימה',w:1.5,prior:.5,g:genS1},
+ S2:{t:'stat',n:'קריאת טבלת שכיחויות',w:2,prior:.35,g:genS2},
+ S3:{t:'stat',n:'השכיח',w:1.3,prior:.7,g:genS3},
+ S4:{t:'stat',n:'טווח הנתונים',w:1.1,prior:.7,g:genS4},
+ S5:{t:'stat',n:'שכיחות יחסית (שבר, עשרוני, אחוזים)',w:3,prior:.15,g:genS5},
+ S6:{t:'stat',n:'"ומעלה" ו"נמוך מ-"',w:1.5,prior:.6,g:genS6},
+ S7:{t:'stat',n:'דיאגרמת עמודות',w:1.2,prior:.6,g:genS7},
+ S8:{t:'stat',n:'דיאגרמת עוגה',w:1.5,prior:.45,g:genS8},
+ C1:{t:'circ',n:'היקף מעגל',w:2,prior:.5,g:genC1},
+ C2:{t:'circ',n:'שטח עיגול',w:2,prior:.45,g:genC2},
+ C3:{t:'circ',n:'מהיקף לרדיוס ולקוטר',w:1.5,prior:.4,g:genC3},
+ C4:{t:'circ',n:'פי כמה? היקף מול שטח',w:1,prior:.4,g:genC4}
 };
 const LEVELS=['מתחילה','מתאמנת','חוקרת','מחשבת','מומחית','אלופה','גאונית','אגדה'];
 const LV_XP=120;
@@ -530,13 +803,15 @@ const BADGES=[
  {id:'ratio',e:'⚖️',n:'אלופת היחס'},
  {id:'pct',e:'💸',n:'אלופת האחוזים'},
  {id:'pyth',e:'📐',n:'אלופת פיתגורס'},
- {id:'ang',e:'📏',n:'אלופת הזוויות'}
+ {id:'ang',e:'📏',n:'אלופת הזוויות'},
+ {id:'stat',e:'📊',n:'אלופת הסטטיסטיקה'},
+ {id:'circ',e:'⭕',n:'אלופת המעגל'}
 ];
 const val=st=>st==='ok'?1:st==='partial'?.5:0;
 
 /* ===================== state & sync ===================== */
 const KEY='shira-math-v1';
-const blank=()=>({v:1,name:'',xp:0,pages:[],days:[],badges:[],updated:0});
+const blank=()=>({v:1,sel:null,name:'',xp:0,pages:[],days:[],badges:[],updated:0});
 let S=(()=>{try{const r=localStorage.getItem(KEY);if(r)return Object.assign(blank(),JSON.parse(r))}catch(e){}return blank()})();
 let db=null,dbOk=true,writing=false,pendingWrite=false,syncMsg='';
 function setSync(m){syncMsg=m;const el=document.getElementById('sync');if(el)el.textContent=m}
@@ -570,12 +845,16 @@ function skillAcc(sk){const h=skillHist(sk).slice(-12);const ok=h.reduce((a,i)=>
 function skillW(sk){return SK[sk].w*(0.35+1.65*(1-skillAcc(sk)))}
 function topicStats(t,last=15){const h=allItems().filter(i=>SK[i.s]&&SK[i.s].t===t);const l=h.slice(-last);return{n:h.length,acc:l.length?l.reduce((a,i)=>a+val(i.st),0)/l.length:null}}
 function wpick(items,wf){const ws=items.map(wf);let r=Math.random()*ws.reduce((a,b)=>a+b,0);for(let i=0;i<items.length;i++){r-=ws[i];if(r<=0)return items[i]}return items[items.length-1]}
+function selTopics(){const all=Object.keys(TOPICS);return (S.sel||all).filter(t=>TOPICS[t])}
 function buildPage(){
- const tl=Object.keys(TOPICS);
- const extra=wpick(tl,t=>Object.keys(SK).filter(k=>SK[k].t===t).reduce((a,k)=>a+skillW(k),0));
+ const tl=selTopics(),N=5,tw=t=>Object.keys(SK).filter(k=>SK[k].t===t).reduce((a,k)=>a+skillW(k),0);
+ let slots=[];
+ if(tl.length>=N){const pool=tl.slice();while(slots.length<N){const t=wpick(pool,tw);slots.push(t);pool.splice(pool.indexOf(t),1)}}
+ else{slots=tl.slice();while(slots.length<N)slots.push(wpick(tl,tw))}
  const used=new Set(),exs=[];
- for(const t of [...tl,extra]){
-  const cands=Object.keys(SK).filter(k=>SK[k].t===t&&!used.has(k));
+ for(const t of slots){
+  let cands=Object.keys(SK).filter(k=>SK[k].t===t&&!used.has(k));
+  if(!cands.length)cands=Object.keys(SK).filter(k=>SK[k].t===t);
   const sk=wpick(cands,skillW);used.add(sk);
   const ex=SK[sk].g();ex.skill=sk;ex.topic=t;exs.push(ex);
  }
@@ -607,11 +886,13 @@ function go(v){view=v;render()}
 
 function renderHome(){
  const lv=level(),st=streak();
+ const sel=new Set(selTopics());
  const tcards=Object.entries(TOPICS).map(([k,t])=>{
   const s=topicStats(k);const acc=s.acc==null?t.prior:s.acc;const stars=acc>=.9?3:acc>=.7?2:acc>=.45?1:0;
-  return `<div class="tcard" style="--c:${t.c}"><div class="top"><span class="nm">${t.n}</span><span class="em">${t.e}</span></div>
+  return `<button class="tcard pickable ${sel.has(k)?'sel':''}" data-t="${k}" style="--c:${t.c}"><span class="chk">${sel.has(k)?'✓':''}</span>${t.isNew?'<span class="newb">חדש!</span>':''}<div class="top"><span class="nm">${t.e} ${t.n}</span></div>
+  <div class="tsub">${t.sub||''}</div>
   <div class="bar"><i style="width:${Math.round(acc*100)}%"></i></div>
-  <div class="meta"><span>${s.acc==null?'נקודת פתיחה':Math.round(acc*100)+'% הצלחה'}</span><span class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span></div></div>`;
+  <div class="meta"><span>${s.acc==null?'עוד לא תורגל':Math.round(acc*100)+'% הצלחה'}</span><span class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span></div></button>`;
  }).join('');
  const bd=BADGES.map(b=>`<div class="bdg ${S.badges.includes(b.id)?'':'off'}"><span>${b.e}</span>${b.n}</div>`).join('');
  const greet=S.pages.length?pick(['איזה כיף שחזרת!','מוכנה לעוד דף?','כל דף מקרב אותך לרמה הבאה!','המוח שלך מתחמם 🔥']):'בואי נתחיל את המסע!';
@@ -621,13 +902,19 @@ function renderHome(){
   <div class="lvl"><span class="badge">רמה ${lv.i+1} · ${lv.name}</span><div class="xpbar"><i style="width:${lv.pct}%"></i></div></div>
   <div class="stats"><span class="stat">⭐ ${S.xp} נקודות</span><span class="stat">🔥 ${st} ${st===1?'יום':'ימים'} ברצף</span><span class="stat">📄 ${S.pages.length} דפים</span></div>
  </div>
+ <div class="pickhead"><h3>מה מתרגלים היום?</h3><span><button class="link" id="all">בחירת הכול</button><button class="link" id="none">ניקוי</button></span></div>
+ <div class="muted" style="font-size:14.5px;margin-top:-4px">לחצי על הנושאים שרוצים לתרגל. אפשר לבחור כמה.</div>
  <div class="topics">${tcards}</div>
- <div class="cta"><button class="btn" id="start">▶ &nbsp;דף תרגול חדש</button></div>
- <div class="muted" style="text-align:center;font-size:15px">כל דף כולל 5 תרגילים מכל הנושאים, עם דגש על מה שצריך לחזק. עוד ${lv.toNext} נקודות לרמה הבאה.</div>
+ <div class="cta"><button class="btn" id="start" ${sel.size?'':'disabled'}>▶ &nbsp;דף תרגול חדש</button></div>
+ <div class="muted" style="text-align:center;font-size:15px">${sel.size===Object.keys(TOPICS).length?'נבחרו כל הנושאים':'נבחרו: '+[...sel].map(t=>TOPICS[t].n).join(', ')}. כל דף כולל 5 תרגילים, עם דגש על מה שצריך לחזק. עוד ${lv.toNext} נקודות לרמה הבאה.</div>
  <div class="badges"><h3>🏅 התגים שלי</h3><div class="blist">${bd}</div></div>
  <div class="foot"><button class="link" id="nm">✏️ ${S.name?'שינוי שם':'הוספת שם'}</button><button class="link" id="parent">👨‍👩‍👧 מסך הורים</button></div>`;
  document.getElementById('start').onclick=startPage;
  document.getElementById('parent').onclick=()=>go('parent');
+ app.querySelectorAll('.pickable').forEach(b=>b.onclick=()=>{const cur=new Set(selTopics());const t=b.dataset.t;
+  if(S.sel==null)S.sel=Object.keys(TOPICS);const st=new Set(S.sel);st.has(t)?st.delete(t):st.add(t);S.sel=[...st];save();const y=scrollY;renderHome();window.scrollTo(0,y)});
+ document.getElementById('all').onclick=()=>{S.sel=Object.keys(TOPICS);save();const y=scrollY;renderHome();window.scrollTo(0,y)};
+ document.getElementById('none').onclick=()=>{S.sel=[];save();const y=scrollY;renderHome();window.scrollTo(0,y)};
  document.getElementById('nm').onclick=askName;
  if(!S.name&&!S.pages.length&&!askedName){askedName=true;setTimeout(askName,300)}
 }
@@ -640,14 +927,19 @@ function askName(){
  o.querySelector('[data-y]').onclick=done;inp.onkeydown=e=>{if(e.key==='Enter')done()};
  o.querySelector('[data-n]').onclick=()=>o.remove();
 }
-function startPage(){cur={n:S.pages.length+1,exs:buildPage(),vals:[]};go('page')}
+function startPage(){if(!selTopics().length)return;cur={n:S.pages.length+1,exs:buildPage(),vals:[]};go('page')}
 
 function fieldHtml(f,i){
  if(f.kind==='ratio')return `<div class="field"><label>היחס</label><div class="ratio">
   <div class="part"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}_a"><small>${f.names[0]}</small></div>
   <span class="colon">:</span>
   <div class="part"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}_b"><small>${f.names[1]}</small></div></div></div>`;
- return `<div class="field"><label>${f.label}</label><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}"></div>`;
+ if(f.kind==='frac')return `<div class="field"><label>שבר פשוט</label><div class="ratio">
+  <div class="part"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}_a"><small>מונה</small></div>
+  <span class="colon">/</span>
+  <div class="part"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}_b"><small>מכנה</small></div></div></div>`;
+ if(f.kind==='choice')return `<div class="field" style="flex-basis:100%"><label>${f.label||''}</label><div class="opts" data-i="${i}" data-k="${f.k}">${f.opts.map((o,j)=>`<button type="button" class="opt" data-j="${j}">${o.h}</button>`).join('')}</div></div>`;
+ return `<div class="field"><label dir="auto">${f.label}</label><div class="inwrap"><input class="inp" inputmode="decimal" autocomplete="off" data-i="${i}" data-k="${f.k}">${f.sfx?`<span class="sfx">${f.sfx}</span>`:''}</div></div>`;
 }
 function renderPage(){
  const cards=cur.exs.map((ex,i)=>{const t=TOPICS[ex.topic];return `<div class="card" style="--c:${t.c};animation-delay:${i*.07}s">
@@ -657,13 +949,16 @@ function renderPage(){
  app.innerHTML=`<div class="phead"><h2>דף ${cur.n} ✏️</h2><div class="dots">${cur.exs.map((_,i)=>`<i data-d="${i}"></i>`).join('')}</div><button class="link" id="home">✕ יציאה</button></div>
  ${cards}<div class="cta"><button class="btn" id="submit">סיימתי – בואי נבדוק! ✨</button></div>`;
  const inputs=[...app.querySelectorAll('.inp')];
- const upd=()=>cur.exs.forEach((ex,i)=>{const ins=inputs.filter(x=>+x.dataset.i===i);app.querySelector(`[data-d="${i}"]`).classList.toggle('on',ins.every(x=>x.value.trim()))});
+ const sel={};
+ const filled=i=>inputs.filter(x=>+x.dataset.i===i).every(x=>x.value.trim())&&cur.exs[i].fields.filter(f=>f.kind==='choice').every(f=>sel[i+'_'+f.k]!=null);
+ const upd=()=>cur.exs.forEach((ex,i)=>app.querySelector(`[data-d="${i}"]`).classList.toggle('on',filled(i)));
+ app.querySelectorAll('.opts').forEach(g=>g.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{g.querySelectorAll('.opt').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');sel[g.dataset.i+'_'+g.dataset.k]=b.dataset.j;upd()}));
  inputs.forEach((inp,idx)=>{inp.addEventListener('input',upd);inp.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const nx=inputs[idx+1];if(nx)nx.focus();else document.getElementById('submit').focus()}})});
- document.getElementById('home').onclick=async()=>{if(inputs.some(x=>x.value.trim())){if(!(await modal('לצאת? התשובות בדף הזה לא יישמרו.',['לצאת','להישאר'])))return}go('home')};
+ document.getElementById('home').onclick=async()=>{if(inputs.some(x=>x.value.trim())||Object.keys(sel).length){if(!(await modal('לצאת? התשובות בדף הזה לא יישמרו.',['לצאת','להישאר'])))return}go('home')};
  document.getElementById('submit').onclick=async()=>{
-  const empty=cur.exs.filter((_,i)=>inputs.filter(x=>+x.dataset.i===i).some(x=>!x.value.trim())).length;
+  const empty=cur.exs.filter((_,i)=>!filled(i)).length;
   if(empty&&!(await modal(`יש ${empty===1?'תרגיל אחד שלא הושלם':empty+' תרגילים שלא הושלמו'}. לבדוק בכל זאת?`,['לבדוק','לחזור לתרגילים'])))return;
-  cur.vals=cur.exs.map((_,i)=>{const o={};inputs.filter(x=>+x.dataset.i===i).forEach(x=>o[x.dataset.k]=x.value);return o});
+  cur.vals=cur.exs.map((ex,i)=>{const o={};inputs.filter(x=>+x.dataset.i===i).forEach(x=>o[x.dataset.k]=x.value);ex.fields.filter(f=>f.kind==='choice').forEach(f=>o[f.k]=sel[i+'_'+f.k]);return o});
   finishPage();
  };
 }
@@ -684,7 +979,9 @@ function finishPage(){
 }
 function userAns(ex,v){
  return ex.fields.map(f=>{
-  if(f.kind==='ratio'){const a=(v[f.k+'_a']||'').trim(),b=(v[f.k+'_b']||'').trim();return(a||b)?M(esc(a||'?')+' : '+esc(b||'?')):'—'}
+  if(f.kind==='ratio'||f.kind==='frac'){const a=(v[f.k+'_a']||'').trim(),b=(v[f.k+'_b']||'').trim();return(a||b)?M(esc(a||'?')+(f.kind==='frac'?' / ':' : ')+esc(b||'?')):'—'}
+  if(f.kind==='choice'){const x=v[f.k];return x==null?'—':f.opts[+x].h}
+  if(f.sfx){const s=(v[f.k]||'').trim();return f.label.split('=')[0].trim()+' = '+(s?M(esc(s)+f.sfx):'—')}
   const s=(v[f.k]||'').trim();return(ex.fields.length>1?f.label.replace(/\s*\(.*\)/,'')+': ':'')+(s?M(esc(s)):'—');
  }).join(' · ');
 }
